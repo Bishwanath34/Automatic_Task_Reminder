@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head xmlns:th="https://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Updating-task</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+</head>
+
+<body style="background: #f5f5f5;">
+
+<div class="container mt-5">
+    <div class="card shadow p-4" style="max-width: 550px; margin: auto; border-radius: 12px;">
+
+        <h3 class="text-center mb-4">Create a New Task</h3>
+
+        <form th:action="@{/api/task/create}" th:object="${task}" method="post">
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label  class="form-label" style="font-weight: 600;">Task Title</label>
+                <input th:field="*{title}" type="text" class="form-control" placeholder="Enter task title" required>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label" style="font-weight: 600;">Description</label>
+                <textarea  th:field="*{description}"  class="form-control" rows="3" placeholder="Enter task description"></textarea>
+            </div>
+
+            <!-- Due Date -->
+            <div class="mb-3">
+                <label class="form-label" style="font-weight: 600;">Due Date</label>
+                <input th:field="*{dueDate}" type="text" id="dueDate" class="form-control" placeholder="Select due date">
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label  class="form-label" style="font-weight: 600;">Status</label>
+                <select th:field="*{status}" class="form-select">
+                    <option value="PENDING">PENDING</option>
+                    <option value="IN_PROGRESS">IN_PROGRESS</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                </select>
+            </div>
+
+            <!-- Priority -->
+            <div class="mb-3">
+                <label class="form-label" style="font-weight: 600;">Priority</label>
+                <select class="form-select">
+                    <option>LOW</option>
+                    <option>MEDIUM</option>
+                    <option>HIGH</option>
+                </select>
+            </div>
+
+            <!-- Created At (auto-fill with datetime) -->
+            <div class="mb-3">
+                <label class="form-label" style="font-weight: 600;">Created At</label>
+                <input type="text" id="createdAt" class="form-control" readonly>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100"
+                    style="padding: 10px; border-radius: 6px;">
+                Update Task
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+    // Date picker
+    flatpickr("#dueDate", {
+        dateFormat: "Y-m-d",
+        minDate: "today"
+    });
+
+    // Autofill createdAt with current timestamp
+    document.getElementById("createdAt").value =
+        new Date().toISOString().slice(0, 19).replace("T", " ");
+</script>
+
+</body>
+</html>
