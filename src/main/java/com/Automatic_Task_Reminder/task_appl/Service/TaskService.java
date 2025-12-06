@@ -1,6 +1,8 @@
 package com.Automatic_Task_Reminder.task_appl.Service;
 
 import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
+import com.Automatic_Task_Reminder.task_appl.Repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -9,37 +11,51 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 @Service
 public class TaskService {
 
-    private List<taskModel> taskList = new ArrayList<>();
+@Autowired
+   private TaskRepository taskRepository;
 
-    public TaskService() {
 
-        taskList.add(new taskModel(
-                "Pay Electricity Bill",
-                "Pay the monthly electricity bill before due date",
-                "Bills",
-                "High",
-                "Pending",
-                "false",
-                null,
-                LocalDate.of(2025, 1, 20),
-                LocalTime.of(18, 0),
-                LocalDate.of(2025, 1, 19),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                "user123"
-        ));
-    }
 
     public List<taskModel> getTasks() {
-
-        return taskList;
+        return taskRepository.findAll();
     }
 
     public void addTask(taskModel taskModel1) {
-        taskList.add(taskModel1);
+        taskRepository.save(taskModel1);
     }
+
+    public void deleteTask(long id) {
+        taskRepository.deleteById(id);
+    }
+
+    public taskModel findTask(long id) {
+        Optional<taskModel> task=taskRepository.findById(id);
+        if(task.isPresent()) {
+            return task.get();
+        }else{
+            return null;
+        }
+    }
+
+    public void updateTask(taskModel updatedTask) {
+        long id=updatedTask.getId();
+        Optional<taskModel> task=taskRepository.findById(id);
+        if(task.isPresent()){
+            taskModel task1=task.get();
+            task1.setTitle(updatedTask.getTitle());
+            task1.setDescription(updatedTask.getDescription());
+            task1.setStatus(updatedTask.getStatus());
+            task1.setPriority(updatedTask.getPriority());
+            task1.setDueDate(updatedTask.getDueDate());
+        }
+    }
+
 }
