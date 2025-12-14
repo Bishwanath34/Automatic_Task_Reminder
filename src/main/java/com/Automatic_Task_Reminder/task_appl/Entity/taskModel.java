@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class taskModel {
     private String title;
 @NotEmpty(message = "description cannot be empty")
     private String description;
-@Future(message = "dueDate must be future")
+@NotNull(message = "dueDate is required")
     private LocalDate dueDate;
     private String status;
     @NotEmpty

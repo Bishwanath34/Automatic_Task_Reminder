@@ -45,7 +45,7 @@
                 <select th:field="*{status}" class="form-select">
                     <option value="PENDING">PENDING</option>
                     <option value="IN_PROGRESS">IN_PROGRESS</option>
-                    <option value="COMPLETED">COMPLETED</option>
+                    <option value="DONE">DONE</option>
                 </select>
             </div>
 
@@ -92,6 +92,8 @@
     document.getElementById("createdAt").value =
         new Date().toISOString().slice(0, 19).replace("T", " ");
 </script>
-
+<footer class="footer">
+    Task Reminder App © 2025 - Created by Bishwanath Kumam
+</footer>
 </body>
 </html>

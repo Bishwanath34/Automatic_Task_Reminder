@@ -1,0 +1,47 @@
+package com.Automatic_Task_Reminder.task_appl.Controller;
+
+import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
+import com.Automatic_Task_Reminder.task_appl.Service.TaskService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/rest")
+public class restController {
+
+    @Autowired
+    private TaskService taskService;
+
+    @GetMapping("/tasks")
+    public List<taskModel> getTasks(
+            @RequestParam(required = false, defaultValue = "0") int pageNo,
+            @RequestParam(required = false, defaultValue = "5") int pageSize,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String priority,
+            @RequestParam(required = false) String keyword) {
+
+        return taskService.getTasks(pageNo, pageSize, sortBy, status,priority,keyword);
+    }
+
+    @PostMapping("/task/create")
+    public void addTask(@RequestBody taskModel taskModel) {
+        taskService.addTask(taskModel);
+    }
+
+    @DeleteMapping("/task/{id}")
+    public void deleteTask(@PathVariable long id) {
+        taskService.deleteTask(id);
+    }
+
+    @PutMapping("/task/update/{id}")
+    public void updateTask(@PathVariable long id, @RequestBody taskModel taskModel1) {
+        taskService.updateTask(id, taskModel1);
+    }
+}
