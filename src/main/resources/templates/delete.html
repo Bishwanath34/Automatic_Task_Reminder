@@ -43,19 +43,16 @@
             <div class="mb-3">
                 <label  class="form-label" style="font-weight: 600;">Status</label>
                 <select th:field="*{status}" class="form-select">
-                    <option value="PENDING">PENDING</option>
-                    <option value="IN_PROGRESS">IN_PROGRESS</option>
-                    <option value="DONE">DONE</option>
+                    <option th:each="status:${statuses}" th:value="${status}" th:text="${status}"></option>
                 </select>
             </div>
 
             <!-- Priority -->
             <div class="mb-3">
                 <label class="form-label" style="font-weight: 600;">Priority</label>
-                <select class="form-select">
-                    <option>LOW</option>
-                    <option>MEDIUM</option>
-                    <option>HIGH</option>
+                <select class="form-select" th:field="*{priority}">
+                    <option th:each="priority:${priorities}" th:value="${priority}" th:text="${priority}"></option>
+
                 </select>
             </div>
 

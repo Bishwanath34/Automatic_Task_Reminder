@@ -2,6 +2,8 @@ package com.Automatic_Task_Reminder.task_appl.Controller;
 
 import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import com.Automatic_Task_Reminder.task_appl.Service.TaskService;
+import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
+import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -23,8 +25,8 @@ public class restController {
             @RequestParam(required = false, defaultValue = "0") int pageNo,
             @RequestParam(required = false, defaultValue = "5") int pageSize,
             @RequestParam(required = false, defaultValue = "id") String sortBy,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String priority,
+            @RequestParam(required = false) StatusEnum status,
+            @RequestParam(required = false) PriorityEnum priority,
             @RequestParam(required = false) String keyword) {
 
         return taskService.getTasks(pageNo, pageSize, sortBy, status,priority,keyword);

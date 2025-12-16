@@ -2,6 +2,8 @@ package com.Automatic_Task_Reminder.task_appl.Controller;
 
 import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import com.Automatic_Task_Reminder.task_appl.Service.TaskService;
+import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
+import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,8 +28,8 @@ public class controller {
             @RequestParam(required = false, defaultValue = "0") int pageNo,
             @RequestParam(required = false, defaultValue = "5") int pageSize,
             @RequestParam(required = false, defaultValue = "id") String sortBy,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String priority,
+            @RequestParam(required = false) StatusEnum status,
+            @RequestParam(required = false) PriorityEnum priority,
             @RequestParam(required = false) String keyword) {
 List<taskModel> tasks=taskService.getTasks(pageNo, pageSize, sortBy,status,priority,keyword);
 
@@ -44,6 +46,9 @@ int totalPages=(int) Math.ceil((double)totalItems/pageSize);
     @GetMapping("/")
     public String viewForm(Model model) {
         model.addAttribute("task", new taskModel());
+        model.addAttribute("statuses",StatusEnum.values());
+        model.addAttribute("priorities",PriorityEnum.values());
+
         return "add";
     }
 
@@ -76,6 +81,8 @@ int totalPages=(int) Math.ceil((double)totalItems/pageSize);
     public String updateForm(@PathVariable long id, Model model) {
         taskModel task = taskService.findTask(id);
         model.addAttribute("update1", task);
+        model.addAttribute("statuses",StatusEnum.values());
+        model.addAttribute("priorities",PriorityEnum.values());
         return "update";
     }
 
@@ -94,6 +101,7 @@ int totalPages=(int) Math.ceil((double)totalItems/pageSize);
     @GetMapping("/taskUpdate/{id}")
     public String updateMarkAsDone(@PathVariable long id){
         taskService.updateMarkAsDone(id);
+        taskService.updateCompletedAt(id);
         return "redirect:/api/tasks?pageNo=0&pageSize=5";
     }
 

@@ -22,17 +22,17 @@
 <label>Status:</label>
 <select name="status">
     <option value="">All</option>
-    <option value="PENDING">Pending</option>
-    <option value="IN_PROGRESS">In-progress</option>
-    <option value="COMPLETED">Completed</option>
+    <option value="PENDING" th:selected="${param.status=='PENDING'}">Pending</option>
+    <option value="IN_PROGRESS" th:selected="${param.status=='IN_PROGRESS'}">In-progress</option>
+    <option value="COMPLETED" th:selected="${param.status=='DONE'}">Done</option>
 
 </select>
 <label>Priority:</label>
 <select name="priority">
     <option value="">All</option>
-    <option value="LOW">Low</option>
-    <option value="MEDIUM">Medium</option>
-    <option value="HIGH">High</option>
+    <option value="LOW" th:selected="${param.priority=='LOW'}">Low</option>
+    <option value="MEDIUM" th:selected="${param.priority=='MEDIUM'}">Medium</option>
+    <option value="HIGH" th:selected="${param.priority=='HIGH'}">High</option>
 
 </select>
 <label>Search Title:</label>
@@ -60,6 +60,7 @@
             <th>Priority</th>
             <th>Status</th>
             <th>Created At</th>
+            <th>Completed At</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -73,12 +74,12 @@
             <td th:text="${task.priority}"></td>
             <td th:text="${task.status}"></td>
             <td th:text="${task.createdAt}"></td>
-
+            <td th:text="${task.completedAt}"></td>
             <td>
                 <div style="align-items:center;display:flex;justify-content:center;gap:10px">
                     <a th:href="@{/api/form/{id}(id=${task.id})}" class="btn btn-sm btn-warning">Edit</a>
                     <a th:href="@{/api/task/{id}(id=${task.id})}" class="btn btn-sm btn-danger ms-1">Delete</a>
-                    <a th:href="@{/api/taskUpdate/{id}(id=${task.id})}" class="btn btn-sm btn-success ms-1" >Mark as done</a>
+                    <a th:href="@{/api/taskUpdate/{id}(id=${task.id})}" class="btn btn-sm btn-success ms-1" >MarkAsDone</a>
                 </div>
 
             </td>

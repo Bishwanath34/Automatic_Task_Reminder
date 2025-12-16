@@ -2,6 +2,9 @@ package com.Automatic_Task_Reminder.task_appl.Service;
 
 import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import com.Automatic_Task_Reminder.task_appl.Repository.TaskRepository;
+import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
+import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,23 +29,23 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public List<taskModel> getTasks(int pageNo, int pageSize, String sortBy,String status,String priority,String filter) {
+    public List<taskModel> getTasks(int pageNo, int pageSize, String sortBy, StatusEnum status, PriorityEnum priority, String filter) {
         System.out.println(filter);
         Sort sort =Sort.by(sortBy).ascending();
 
-        if (status != null && !status.isEmpty()  || priority != null && !priority.isEmpty() || filter != null && !filter.isEmpty()){
+        if (status != null  || priority != null  || filter != null && !filter.isEmpty()){
             List<taskModel> filters = null;
-            if (status != null && !status.isEmpty() && priority != null && !priority.isEmpty() && filter != null && !filter.isEmpty()) {
+            if (status != null  && priority != null && filter != null && !filter.isEmpty()) {
                 filters = taskRepository.findByStatusAndPriorityAndTitleContaining(status, priority, filter);
-            } else if ((status == null || status.isEmpty()) && priority != null  && !priority.isEmpty() && filter != null && !filter.isEmpty()) {
+            } else if (status == null && priority != null && filter != null && !filter.isEmpty()) {
                 filters = taskRepository.findByPriorityAndTitleContaining(priority, filter);
-            } else if (status != null && !status.isEmpty() && (priority == null || priority.isEmpty()) && filter != null && !filter.isEmpty()) {
+            } else if (status != null  && priority == null && filter != null && !filter.isEmpty() ){
                 filters = taskRepository.findByStatusAndTitleContaining(status, filter);
-            } else if ( status != null && !status.isEmpty()   && priority != null && !priority.isEmpty() && filter!=null && !filter.isEmpty()) {
+            } else if ( status != null && priority != null  && (filter==null || filter.isEmpty())) {
                 filters = taskRepository.findByStatusAndPriority(status, priority);
-            } else if (status != null && !status.isEmpty()) {
+            } else if (status != null ) {
                 filters = taskRepository.findByStatus(status);
-            } else if (priority != null && !priority.isEmpty()) {
+            } else if (priority != null ) {
                 filters = taskRepository.findByPriority(priority);
             } else {
                 filters = taskRepository.findByTitleContaining(filter);
@@ -86,26 +89,26 @@ public class TaskService {
         Optional<taskModel> task=taskRepository.findById(id);
         if(task.isPresent()){
            taskModel model=task.get();
-           model.setStatus("Completed");
+           model.setStatus(StatusEnum.DONE);
            taskRepository.save(model);
         }
     }
-    public long getTotalCount(String status, String priority, String filter) {
+    public long getTotalCount(StatusEnum status, PriorityEnum priority, String filter) {
 
-        if (status != null && !status.isEmpty()
-                || priority != null && !priority.isEmpty()
+        if (status != null
+                || priority != null
                 || filter != null && !filter.isEmpty()) {
 
-            if (status != null && !status.isEmpty()
-                    && priority != null && !priority.isEmpty()
+            if (status != null
+                    && priority != null
                     && filter != null && !filter.isEmpty()) {
                 return taskRepository.countByStatusAndPriorityAndTitleContaining(status, priority, filter);
-            } else if (status != null && !status.isEmpty()
-                    && priority != null && !priority.isEmpty()) {
+            } else if (status != null
+                    && priority != null) {
                 return taskRepository.countByStatusAndPriority(status, priority);
-            } else if (status != null && !status.isEmpty()) {
+            } else if (status != null ){
                 return taskRepository.countByStatus(status);
-            } else if (priority != null && !priority.isEmpty()) {
+            } else if (priority != null ) {
                 return taskRepository.countByPriority(priority);
             } else {
                 return taskRepository.countByTitleContaining(filter);
@@ -115,4 +118,9 @@ public class TaskService {
         return taskRepository.count();
     }
 
+    public void updateCompletedAt(long id) {
+        taskModel task=taskRepository.findById(id).orElse(null);
+        task.setCompletedAt(LocalDateTime.now());
+        taskRepository.save(task);
+    }
 }

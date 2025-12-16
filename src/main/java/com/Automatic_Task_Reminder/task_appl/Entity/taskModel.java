@@ -1,9 +1,8 @@
 package com.Automatic_Task_Reminder.task_appl.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
+import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,15 +19,42 @@ public class taskModel {
     private long id;
     @NotEmpty(message = "title cannot be empty")
     private String title;
-@NotEmpty(message = "description cannot be empty")
+
+    @Override
+    public String toString() {
+        return "taskModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", dueDate=" + dueDate +
+                ", status=" + status +
+                ", priority=" + priority +
+                ", createdAt=" + createdAt +
+                ", completedAt=" + completedAt +
+                '}';
+    }
+
+    @NotEmpty(message = "description cannot be empty")
     private String description;
 @NotNull(message = "dueDate is required")
     private LocalDate dueDate;
-    private String status;
-    @NotEmpty
-    private String priority;
-    private LocalDateTime createdAt;
 
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
+    @NotNull(message = "Priority is required")
+    @Enumerated(EnumType.STRING)
+    private PriorityEnum priority;
+
+    private LocalDateTime createdAt;
+private LocalDateTime completedAt;
 
 
 
@@ -65,24 +91,11 @@ public class taskModel {
         this.dueDate = dueDate;
     }
 
-    public String getStatus() {
+    public StatusEnum getStatus() {
         return status;
     }
 
-    @Override
-    public String toString() {
-        return "taskModel{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", dueDate=" + dueDate +
-                ", status='" + status + '\'' +
-                ", priority='" + priority + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
-    }
-
-    public void setStatus(String status) {
+    public void setStatus(StatusEnum status) {
         this.status = status;
     }
 
@@ -94,11 +107,11 @@ public class taskModel {
         this.createdAt = createdAt;
     }
 
-    public String getPriority() {
+    public PriorityEnum getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(PriorityEnum priority) {
         this.priority = priority;
     }
 }
