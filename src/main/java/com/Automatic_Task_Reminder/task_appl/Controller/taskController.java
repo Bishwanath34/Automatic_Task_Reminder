@@ -6,7 +6,6 @@ import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
 import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api")
-public class controller {
+public class taskController {
 
     @Autowired
     private TaskService taskService;
@@ -104,5 +103,10 @@ int totalPages=(int) Math.ceil((double)totalItems/pageSize);
         taskService.updateCompletedAt(id);
         return "redirect:/api/tasks?pageNo=0&pageSize=5";
     }
-
+@GetMapping("/view/{id}")
+    public String view(@PathVariable long id,Model model){
+taskModel task=taskService.findTask(id);
+model.addAttribute("view1",task);
+return "view";
+}
 }

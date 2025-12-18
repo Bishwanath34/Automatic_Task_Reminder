@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Task</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="task-container">
+    <h2 th:text="${view1.title}" class="text_align">Task Title</h2>
+    <p th:text="${view1.description}"><strong>Description:</strong> Complete project documentation</p>
+    <p th:text="${view1.status}"><strong>Status:</strong> In Progress</p>
+    <p th:text="${view1.priority}"><strong>Priority:</strong> High</p>
+    <p th:text="${view1.dueDate}"><strong>DueDate:</strong> Date</p>
+    <p th:text="${view1.createdAt}"><strong>CreatedAt:</strong> DateTime</p>
+    <p th:text="${view1.completedAt}"><strong>CompletedAt:</strong> DateTime</p>
+
+    <a th:href="@{/api/tasks}" class="back-btn">Back</a>
+</div>
+
+</body>
+</html>

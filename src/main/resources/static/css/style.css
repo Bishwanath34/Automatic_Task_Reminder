@@ -1,0 +1,34 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+}
+
+.text_align{
+  text-align: center;
+}
+.task-card, .task-container {
+  background: #fff;
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.desc {
+  color: #555;
+}
+
+.view-btn, .back-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: #0d6efd;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.view-btn:hover, .back-btn:hover {
+  background: #084298;
+}

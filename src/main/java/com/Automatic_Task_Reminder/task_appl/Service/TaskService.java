@@ -30,17 +30,16 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     public List<taskModel> getTasks(int pageNo, int pageSize, String sortBy, StatusEnum status, PriorityEnum priority, String filter) {
-        System.out.println(filter);
         Sort sort =Sort.by(sortBy).ascending();
 
-        if (status != null  || priority != null  || filter != null && !filter.isEmpty()){
+        if (status != null  || priority != null  || (filter != null && !filter.isEmpty())){
             List<taskModel> filters = null;
             if (status != null  && priority != null && filter != null && !filter.isEmpty()) {
-                filters = taskRepository.findByStatusAndPriorityAndTitleContaining(status, priority, filter);
+                filters = taskRepository.findByStatusAndPriorityAndTitleContainingIgnoreCase(status, priority, filter);
             } else if (status == null && priority != null && filter != null && !filter.isEmpty()) {
-                filters = taskRepository.findByPriorityAndTitleContaining(priority, filter);
+                filters = taskRepository.findByPriorityAndTitleContainingIgnoreCase(priority, filter);
             } else if (status != null  && priority == null && filter != null && !filter.isEmpty() ){
-                filters = taskRepository.findByStatusAndTitleContaining(status, filter);
+                filters = taskRepository.findByStatusAndTitleContainingIgnoreCase(status, filter);
             } else if ( status != null && priority != null  && (filter==null || filter.isEmpty())) {
                 filters = taskRepository.findByStatusAndPriority(status, priority);
             } else if (status != null ) {
@@ -48,11 +47,10 @@ public class TaskService {
             } else if (priority != null ) {
                 filters = taskRepository.findByPriority(priority);
             } else {
-                filters = taskRepository.findByTitleContaining(filter);
+                filters = taskRepository.findByTitleContainingIgnoreCase(filter);
             }
 
             return filters.stream()
-                    .sorted((a, b) -> a.getTitle().compareTo(b.getTitle()))
                     .skip((long) pageNo * pageSize)
                     .limit(pageSize)
                     .toList();
@@ -97,12 +95,12 @@ public class TaskService {
 
         if (status != null
                 || priority != null
-                || filter != null && !filter.isEmpty()) {
+                || (filter != null && !filter.isEmpty())){
 
             if (status != null
                     && priority != null
                     && filter != null && !filter.isEmpty()) {
-                return taskRepository.countByStatusAndPriorityAndTitleContaining(status, priority, filter);
+                return taskRepository.countByStatusAndPriorityAndTitleContainingIgnoreCase(status, priority, filter);
             } else if (status != null
                     && priority != null) {
                 return taskRepository.countByStatusAndPriority(status, priority);
@@ -111,7 +109,7 @@ public class TaskService {
             } else if (priority != null ) {
                 return taskRepository.countByPriority(priority);
             } else {
-                return taskRepository.countByTitleContaining(filter);
+                return taskRepository.countByTitleContainingIgnoreCase(filter);
             }
         }
 
@@ -119,8 +117,10 @@ public class TaskService {
     }
 
     public void updateCompletedAt(long id) {
-        taskModel task=taskRepository.findById(id).orElse(null);
-        task.setCompletedAt(LocalDateTime.now());
-        taskRepository.save(task);
+        taskRepository.findById(id).ifPresent(task -> {
+            task.setCompletedAt(LocalDateTime.now());
+            taskRepository.save(task);
+        });
+
     }
 }

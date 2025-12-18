@@ -4,18 +4,14 @@ import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import com.Automatic_Task_Reminder.task_appl.Service.TaskService;
 import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
 import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/rest")
-public class restController {
+public class taskRestController {
 
     @Autowired
     private TaskService taskService;
