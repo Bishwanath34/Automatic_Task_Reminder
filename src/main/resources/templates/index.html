@@ -1,59 +1,318 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Task List</title>
+    <title>Task Reminder App</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        /* ================= GLOBAL ================= */
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: "Segoe UI", system-ui, sans-serif;
+ }
+
+ body {
+     background: #f4f6f9;
+     min-height: 100vh;
+     display: flex;
+     flex-direction: column;
+     padding-top: 60px;   /* header height */
+     padding-bottom: 50px; /* footer height */
+     overflow: hidden;
+ }
+
+ /* ================= HEADER ================= */
+ .page-header {
+     position: fixed;
+     top: 0;
+     left: 0;
+     right: 0;
+     height: 60px;
+     display: flex;
+     align-items: center;
+     padding: 0 20px;
+     background: linear-gradient(135deg, #4b6cb7, #182848);
+     color: white;
+     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+     z-index: 1000;
+ }
+
+ /* LEFT - TITLE */
+ .header-title-left {
+     font-size: 20px;
+     font-weight: 600;
+     white-space: nowrap;
+     min-width: 220px;
+ }
+
+ /* CENTER - ICONS */
+ .header-icons-center {
+     flex: 1;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 22px;
+ }
+
+ .header-icons-center a {
+     color: white;
+     font-size: 18px;
+     text-decoration: none;
+     transition: transform 0.2s ease, opacity 0.2s ease;
+ }
+
+ .header-icons-center a:hover {
+     transform: scale(1.15);
+     opacity: 0.85;
+ }
+
+ /* RIGHT - CLOCK + USER + LOGOUT */
+ .header-icons-right {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+     white-space: nowrap;
+ }
+
+ .header-clock {
+     font-size: 13px;
+     opacity: 0.9;
+ }
+
+ .header-icons-right span {
+     font-size: 13px;
+ }
+
+ /* Logout */
+ .logout-btn {
+     background: rgba(255,255,255,0.25);
+     color: white;
+     padding: 6px 14px;
+     border-radius: 18px;
+     font-size: 13px;
+     text-decoration: none;
+     transition: all 0.25s ease;
+ }
+
+ .logout-btn:hover {
+     background: white;
+     color: #182848;
+ }
+
+ /* ================= FILTER CARD ================= */
+ .filter-card {
+     background: #fff;
+     padding: 14px;
+     border-radius: 10px;
+     box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+     margin: 10px;
+     display: flex;
+     flex-wrap: wrap;
+     align-items: flex-end;
+     gap: 8px;
+ }
+
+ .filter-card label {
+     font-weight: 500;
+     font-size: 13px;
+ }
+
+ .filter-card select,
+ .filter-card input {
+     font-size: 13px;
+     padding: 5px 8px;
+ }
+
+ .filter-card .action-group {
+     margin-left: auto;
+     display: flex;
+     gap: 6px;
+ }
+
+ /* ================= TABLE ================= */
+ .table-container {
+     flex: 1;
+     overflow: auto;
+     margin: 0 10px;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 13px;
+ }
+
+ .table th,
+ .table td {
+     padding: 6px 8px;
+     text-align: center;
+ }
+
+ .table thead th {
+     background: #212529;
+     color: white;
+ }
+
+ .table-hover tbody tr:hover {
+     background: #f1f4ff;
+ }
+
+ .btn-sm {
+     font-size: 11px;
+     padding: 3px 6px;
+     border-radius: 5px;
+ }
+
+ /* ================= PAGINATION ================= */
+ .pagination {
+     font-size: 12px;
+     margin: 10px 0;
+ }
+
+ .page-item .page-link {
+     border-radius: 6px;
+     margin: 0 2px;
+ }
+
+ .page-item.active .page-link {
+     background: linear-gradient(135deg, #667eea, #764ba2);
+     border-color: #667eea;
+     color: white;
+ }
+
+ /* ================= FOOTER ================= */
+ footer {
+     position: fixed;
+     bottom: 0;
+     left: 0;
+     right: 0;
+     height: 50px;
+     background: #212529;
+     color: white;
+     text-align: center;
+     line-height: 50px;
+     font-size: 13px;
+ }
+
+ /* ================= RESPONSIVE ================= */
+ @media (max-width: 768px) {
+     .header-title-left {
+         font-size: 16px;
+         min-width: auto;
+     }
+
+     .header-icons-center {
+         gap: 14px;
+     }
+
+     .header-icons-center a {
+         font-size: 16px;
+     }
+
+     .header-clock {
+         display: none;
+     }
+
+     table,
+     th,
+     td {
+         font-size: 11px;
+     }
+ }
+
+    </style>
 </head>
-<body class="p-4">
 
-<h1 style="
-  border-radius: 8px;
-  border: 1px solid transparent;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 5px;
-">Task List</h1>
+<body>
 
-<a href="/api/" class="btn btn-primary mb-3">Add Items</a>
-<form th:action="@{/api/tasks}" method="get">
-<label>Status:</label>
-<select name="status">
-    <option value="">All</option>
-    <option value="PENDING" th:selected="${param.status=='PENDING'}">Pending</option>
-    <option value="IN_PROGRESS" th:selected="${param.status=='IN_PROGRESS'}">In-progress</option>
-    <option value="COMPLETED" th:selected="${param.status=='DONE'}">Done</option>
+<!-- ===== HEADER ===== -->
+<!-- ===== HEADER ===== -->
+<div class="page-header">
 
-</select>
-<label>Priority:</label>
-<select name="priority">
-    <option value="">All</option>
-    <option value="LOW" th:selected="${param.priority=='LOW'}">Low</option>
-    <option value="MEDIUM" th:selected="${param.priority=='MEDIUM'}">Medium</option>
-    <option value="HIGH" th:selected="${param.priority=='HIGH'}">High</option>
+    <!-- LEFT : TITLE -->
+    <div class="header-title-left">
+        ⏰ Task Reminder App
+    </div>
 
-</select>
-<label>Search Title:</label>
+    <!-- CENTER : ICONS -->
+    <div class="header-icons-center">
+        <a th:href="@{/api/cal}" title="Calendar View"><i class="fa-solid fa-calendar"></i></a>
+        <a th:href="@{/api/grid}" title="Grid View"><i class="fa-solid fa-table-cells"></i></a>
+    </div>
 
-    <input type="text" name="keyword" placeholder="keyword...">
-    <button type="submit" class="btn btn-primary mb-3">
-        Filter
-    </button>
+    <!-- RIGHT : CLOCK + USER -->
+    <div class="header-icons-right">
+        <span id="clock" class="header-clock"></span>
+        <span th:text="${loggedUser != null} ? 'Welcome! ' + ${loggedUser.email} : 'Guest'"></span>
+        <a th:href="@{/logout}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
 
+</div>
 
-<a th:href="@{/api/tasks?pageNo=0&pageSize=5}">Clear Filters</a>
-<label>Sort:</label>
-<a th:href="@{/api/tasks(sortBy='dueDate')}">Due Date</a> |
-<a th:href="@{/api/tasks(sortBy='priority')}">Priority</a> |
-<a th:href="@{/api/tasks(sortBy='title')}">Title</a>
-</form>
-<div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered align-middle">
-        <thead class="table-dark">
+<!-- ===== FILTER + ADD BUTTON ===== -->
+<div class="filter-card mx-2">
+    <form th:action="@{/api/tasks}" method="get" class="d-flex flex-wrap gap-2 align-items-end w-100">
+
+        <div>
+            <label>Status</label>
+            <select name="status" class="form-select">
+                <option value="">All</option>
+                <option value="PENDING" th:selected="${param.status=='PENDING'}">Pending</option>
+                <option value="IN_PROGRESS" th:selected="${param.status=='IN_PROGRESS'}">In Progress</option>
+                <option value="COMPLETED" th:selected="${param.status=='COMPLETED'}">Completed</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Priority</label>
+            <select name="priority" class="form-select">
+                <option value="">All</option>
+                <option value="LOW" th:selected="${param.priority=='LOW'}">Low</option>
+                <option value="MEDIUM" th:selected="${param.priority=='MEDIUM'}">Medium</option>
+                <option value="HIGH" th:selected="${param.priority=='HIGH'}">High</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Sort By</label>
+            <select name="sortBy" class="form-select">
+                <option value="id" th:selected="${param.sortBy==null || param.sortBy=='id'}">ID</option>
+                <option value="dueDate" th:selected="${param.sortBy=='dueDate'}">Due Date</option>
+                <option value="priority" th:selected="${param.sortBy=='priority'}">Priority</option>
+                <option value="title" th:selected="${param.sortBy=='title'}">Title</option>
+                <option value="createdAt" th:selected="${param.sortBy=='createdAt'}">Created At</option>
+                <option value="completedAt" th:selected="${param.sortBy=='completedAt'}">Completed At</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Keyword</label>
+            <input type="text" name="keyword" class="form-control" placeholder="Search..." th:value="${param.keyword}">
+        </div>
+
+        <div class="action-group">
+            <button class="btn btn-primary">Apply</button>
+            <a th:href="@{/api/tasks(pageNo=0,pageSize=5,sortBy=id)}" class="btn btn-outline-secondary">Clear</a>
+            <a th:href="@{/api/}" class="btn btn-outline-secondary">Add Task</a>
+        </div>
+
+    </form>
+</div>
+
+<!-- ===== TASK TABLE ===== -->
+<div class="table-container mx-2">
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
         <tr>
-            <th>Id</th>
+            <th>ID</th>
             <th>Title</th>
             <th>Description</th>
             <th>Due Date</th>
@@ -64,7 +323,6 @@
             <th>Actions</th>
         </tr>
         </thead>
-
         <tbody>
         <tr th:each="task : ${tasks}">
             <td th:text="${task.id}"></td>
@@ -76,40 +334,64 @@
             <td th:text="${task.createdAt}"></td>
             <td th:text="${task.completedAt}"></td>
             <td>
-                <div style="align-items:center;display:flex;justify-content:center;gap:10px">
+                <div class="d-flex justify-content-center gap-1">
                     <a th:href="@{/api/view/{id}(id=${task.id})}" class="btn btn-sm btn-primary">View</a>
                     <a th:href="@{/api/form/{id}(id=${task.id})}" class="btn btn-sm btn-warning">Edit</a>
-                    <a th:href="@{/api/task/{id}(id=${task.id})}" class="btn btn-sm btn-danger ms-1">Delete</a>
-                    <a th:href="@{/api/taskUpdate/{id}(id=${task.id})}" class="btn btn-sm btn-success ms-1" >MarkAsDone</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-danger"
+                       th:onclick="|confirmDelete('/api/task/${task.id}')|">Delete</a>
+                    <a th:href="@{/api/taskUpdate/{id}(id=${task.id})}" class="btn btn-sm btn-success">Done</a>
                 </div>
-
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li class="page-item" th:classappend="${currentPage==0} ? 'disabled' ">
-            <a class="page-link" th:href="@{/api/tasks(pageNo=${currentPage-1},pageSize=${pageSize}, sortBy=${param.sortBy},
-                   status=${param.status},
-                   priority=${param.priority},
-                   keyword=${param.keyword})}">Previous</a></li>
-        <li class="page-item" th:each="i:${#numbers.sequence(0,totalPages-1)}" th:classappend="${i==currentPage} ? 'active' "><a class="page-link" th:href="@{/api/tasks(pageNo=${i},pageSize=${pageSize}, sortBy=${param.sortBy},
-                   status=${param.status},
-                   priority=${param.priority},
-                   keyword=${param.keyword})}" th:text="${i+1}"></a></li>
-<!--        <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-<!--        <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-        <li class="page-item" th:classappend="${currentPage==totalPages-1}?'disabled' "><a class="page-link" th:href="@{/api/tasks(pageNo=${currentPage+1},pageSize=${pageSize}, sortBy=${param.sortBy},
-                   status=${param.status},
-                   priority=${param.priority},
-                   keyword=${param.keyword})}">Next</a></li>
+
+<!-- ===== PAGINATION ===== -->
+<nav class="mx-2">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${currentPage==0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/api/tasks(pageNo=${currentPage-1},pageSize=${pageSize},sortBy=${param.sortBy},status=${param.status},priority=${param.priority},keyword=${param.keyword})}">
+                Previous
+            </a>
+        </li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(0,totalPages-1)}"
+            th:classappend="${i==currentPage} ? 'active'">
+            <a class="page-link"
+               th:href="@{/api/tasks(pageNo=${i},pageSize=${pageSize},sortBy=${param.sortBy},status=${param.status},priority=${param.priority},keyword=${param.keyword})}"
+               th:text="${i+1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage==totalPages-1} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/api/tasks(pageNo=${currentPage+1},pageSize=${pageSize},sortBy=${param.sortBy},status=${param.status},priority=${param.priority},keyword=${param.keyword})}">
+                Next
+            </a>
+        </li>
     </ul>
 </nav>
 
-<footer class="footer">
-    Task Reminder App © 2025 - Created by Bishwanath Kumam
+<!-- ===== FOOTER ===== -->
+<footer>
+    Task Reminder App © 2025 — Created by Bishwanath Kumam
 </footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    function confirmDelete(url) {
+        if (confirm("Are you sure you want to delete this task?")) {
+            window.location.href = url;
+        }
+    }
+    function updateClock() {
+        const now = new Date();
+        const time = now.toLocaleTimeString();
+        document.getElementById("clock").innerText = "🕒 " + time;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
 </body>
 </html>

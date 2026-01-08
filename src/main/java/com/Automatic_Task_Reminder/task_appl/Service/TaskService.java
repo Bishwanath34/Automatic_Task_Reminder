@@ -4,24 +4,17 @@ import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import com.Automatic_Task_Reminder.task_appl.Repository.TaskRepository;
 import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
 import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
-import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import java.awt.print.Pageable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class TaskService {
@@ -29,25 +22,26 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public List<taskModel> getTasks(int pageNo, int pageSize, String sortBy, StatusEnum status, PriorityEnum priority, String filter) {
-        Sort sort =Sort.by(sortBy).ascending();
+    // Get tasks with pagination and filters
+    public List<taskModel> getTasksByUser(Integer userId, int pageNo, int pageSize, String sortBy, StatusEnum status, PriorityEnum priority, String filter) {
+        Sort sort = Sort.by(sortBy).ascending();
 
-        if (status != null  || priority != null  || (filter != null && !filter.isEmpty())){
+        if (status != null || priority != null || (filter != null && !filter.isEmpty())) {
             List<taskModel> filters = null;
-            if (status != null  && priority != null && filter != null && !filter.isEmpty()) {
-                filters = taskRepository.findByStatusAndPriorityAndTitleContainingIgnoreCase(status, priority, filter);
+            if (status != null && priority != null && filter != null && !filter.isEmpty()) {
+                filters = taskRepository.findByUserIdAndStatusAndPriorityAndTitleContainingIgnoreCase(userId, status, priority, filter);
             } else if (status == null && priority != null && filter != null && !filter.isEmpty()) {
-                filters = taskRepository.findByPriorityAndTitleContainingIgnoreCase(priority, filter);
-            } else if (status != null  && priority == null && filter != null && !filter.isEmpty() ){
-                filters = taskRepository.findByStatusAndTitleContainingIgnoreCase(status, filter);
-            } else if ( status != null && priority != null  && (filter==null || filter.isEmpty())) {
-                filters = taskRepository.findByStatusAndPriority(status, priority);
-            } else if (status != null ) {
-                filters = taskRepository.findByStatus(status);
-            } else if (priority != null ) {
-                filters = taskRepository.findByPriority(priority);
+                filters = taskRepository.findByUserIdAndPriorityAndTitleContainingIgnoreCase(userId, priority, filter);
+            } else if (status != null && priority == null && filter != null && !filter.isEmpty()) {
+                filters = taskRepository.findByUserIdAndStatusAndTitleContainingIgnoreCase(userId, status, filter);
+            } else if (status != null && priority != null) {
+                filters = taskRepository.findByUserIdAndStatusAndPriority(userId, status, priority);
+            } else if (status != null) {
+                filters = taskRepository.findByUserIdAndStatus(userId, status);
+            } else if (priority != null) {
+                filters = taskRepository.findByUserIdAndPriority(userId, priority);
             } else {
-                filters = taskRepository.findByTitleContainingIgnoreCase(filter);
+                filters = taskRepository.findByUserIdAndTitleContainingIgnoreCase(userId, filter);
             }
 
             return filters.stream()
@@ -56,71 +50,81 @@ public class TaskService {
                     .toList();
         }
 
-
-        return taskRepository.findAll(PageRequest.of(pageNo,pageSize,sort)).getContent();
+        return taskRepository.findByUserId(userId, PageRequest.of(pageNo, pageSize, sort));
     }
 
-    public void addTask(taskModel taskModel1) {
-        taskRepository.save(taskModel1);
-    }
-
-    public void deleteTask(long id) {
-        taskRepository.deleteById(id);
-    }
-
-    public taskModel findTask(long id) {
-        return taskRepository.findById(id).orElse(null);
-    }
-
-    public void updateTask(long id, taskModel updatedTask) {
-        taskRepository.findById(id).ifPresent(existing -> {
-            existing.setTitle(updatedTask.getTitle());
-            existing.setDescription(updatedTask.getDescription());
-            existing.setStatus(updatedTask.getStatus());
-            existing.setPriority(updatedTask.getPriority());
-            existing.setDueDate(updatedTask.getDueDate());
-            taskRepository.save(existing);
-        });
-    }
-
-    public void updateMarkAsDone(long id) {
-        Optional<taskModel> task=taskRepository.findById(id);
-        if(task.isPresent()){
-           taskModel model=task.get();
-           model.setStatus(StatusEnum.DONE);
-           taskRepository.save(model);
-        }
-    }
-    public long getTotalCount(StatusEnum status, PriorityEnum priority, String filter) {
-
-        if (status != null
-                || priority != null
-                || (filter != null && !filter.isEmpty())){
-
-            if (status != null
-                    && priority != null
-                    && filter != null && !filter.isEmpty()) {
-                return taskRepository.countByStatusAndPriorityAndTitleContainingIgnoreCase(status, priority, filter);
-            } else if (status != null
-                    && priority != null) {
-                return taskRepository.countByStatusAndPriority(status, priority);
-            } else if (status != null ){
-                return taskRepository.countByStatus(status);
-            } else if (priority != null ) {
-                return taskRepository.countByPriority(priority);
+    // Total count for pagination
+    public long getTotalCountByUser(Integer userId, StatusEnum status, PriorityEnum priority, String filter) {
+        if (status != null || priority != null || (filter != null && !filter.isEmpty())) {
+            if (status != null && priority != null && filter != null && !filter.isEmpty()) {
+                return taskRepository.countByUserIdAndStatusAndPriorityAndTitleContainingIgnoreCase(userId, status, priority, filter);
+            } else if (status != null && priority != null) {
+                return taskRepository.countByUserIdAndStatusAndPriority(userId, status, priority);
+            } else if (status != null) {
+                return taskRepository.countByUserIdAndStatus(userId, status);
+            } else if (priority != null) {
+                return taskRepository.countByUserIdAndPriority(userId, priority);
             } else {
-                return taskRepository.countByTitleContainingIgnoreCase(filter);
+                return taskRepository.countByUserIdAndTitleContainingIgnoreCase(userId, filter);
             }
         }
-
-        return taskRepository.count();
+        return taskRepository.countByUserId(userId);
     }
 
-    public void updateCompletedAt(long id) {
-        taskRepository.findById(id).ifPresent(task -> {
-            task.setCompletedAt(LocalDateTime.now());
-            taskRepository.save(task);
-        });
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel addTask(taskModel taskModel) {
+        return taskRepository.save(taskModel);
+    }
 
+    @Caching(evict = {
+            @CacheEvict(value = "task", key = "#id"),
+            @CacheEvict(value = "tasks", allEntries = true)
+    })
+    public void deleteTaskByUser(long id, Integer userId) {
+        taskModel task = taskRepository.findByIdAndUserId(id, userId);
+        if (task != null) taskRepository.delete(task);
+    }
+
+    @Cacheable(value = "task", key = "#id")
+    public taskModel findTaskByUser(long id, Integer userId) {
+        return taskRepository.findByIdAndUserId(id, userId);
+    }
+
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel updateTaskByUser(long id, taskModel updatedTask, Integer userId) {
+        taskModel existing = taskRepository.findByIdAndUserId(id, userId);
+        if (existing == null) return null;
+
+        existing.setTitle(updatedTask.getTitle());
+        existing.setDescription(updatedTask.getDescription());
+        existing.setStatus(updatedTask.getStatus());
+        existing.setPriority(updatedTask.getPriority());
+        existing.setDueDate(updatedTask.getDueDate());
+        return taskRepository.save(existing);
+    }
+
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel updateMarkAsDoneByUser(long id, Integer userId) {
+        taskModel task = taskRepository.findByIdAndUserId(id, userId);
+        if (task == null) return null;
+
+        task.setStatus(StatusEnum.DONE);
+        return taskRepository.save(task);
+    }
+
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel updateCompletedAtByUser(long id, Integer userId) {
+        taskModel task = taskRepository.findByIdAndUserId(id, userId);
+        if (task == null) return null;
+
+        task.setCompletedAt(LocalDateTime.now());
+        return taskRepository.save(task);
+    }
+
+    public List<taskModel> getAllTasksByUser(Integer userId) {
+        return taskRepository.findByUserId(userId);
     }
 }

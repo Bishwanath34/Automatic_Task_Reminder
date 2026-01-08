@@ -13,18 +13,16 @@ import java.time.LocalTime;
 
 @Entity
 public class taskModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @NotEmpty(message = "title cannot be empty")
-    private String title;
+    public User getUser() {
+        return user;
+    }
 
     @Override
     public String toString() {
         return "taskModel{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", user=" + user +
                 ", description='" + description + '\'' +
                 ", dueDate=" + dueDate +
                 ", status=" + status +
@@ -33,6 +31,19 @@ public class taskModel {
                 ", completedAt=" + completedAt +
                 '}';
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @NotEmpty(message = "title cannot be empty")
+    private String title;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @NotEmpty(message = "description cannot be empty")
     private String description;

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Compact Grid</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 60px; /* header height */
+            padding-bottom: 50px; /* footer height */
+            overflow: hidden;
+        }
+
+        /* ================= HEADER ================= */
+        .page-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .back-btn {
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .header-clock {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #182848;
+        }
+
+        /* ================= GRID ================= */
+        .tasks-grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(140px, auto);
+            gap: 12px;
+            padding: 12px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            font-size: 12px;
+            padding: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(0,0,0,0.2);
+        }
+
+        .task-header {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+        }
+
+        .task-title { font-weight: 600; font-size: 14px; }
+        .task-description { font-size: 12px; color: #7f8c8d; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .task-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+        .status-badge, .priority-badge { padding: 2px 6px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+
+        /* Status Classes */
+        .status-badge.pending { background: #fff3cd; color: #856404; }
+        .status-badge.in-progress { background: #cce5ff; color: #004085; }
+        .status-badge.done { background: #d4edda; color: #155724; }
+
+        /* Priority Classes */
+        .priority-badge.high { background: #f8d7da; color: #721c24; }
+        .priority-badge.medium { background: #fff3cd; color: #856404; }
+        .priority-badge.low { background: #d1ecf1; color: #0c5460; }
+
+        .task-actions { display: flex; gap: 4px; margin-top: auto; }
+        .btn-action { flex: 1; text-align: center; border-radius: 6px; font-size: 12px; color: white; text-decoration: none; padding: 4px 0; }
+        .btn-view { background: #6a11cb; }
+        .btn-edit { background: #2575fc; }
+        .btn-delete { background: #dc3545; }
+
+        .empty-state { grid-column: span 3; text-align: center; padding: 16px; background: white; border-radius: 8px; font-size: 14px; }
+
+        .pagination { justify-content: center; margin: 8px 0; flex-shrink: 0; }
+
+        /* ================= FOOTER ================= */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: #212529;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1024px) { .tasks-grid-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 650px) { .tasks-grid-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+    <div class="header-left">
+        <a th:href="@{/api/tasks}" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        ⏰ Task Reminder App
+    </div>
+    <div class="header-right">
+        <span id="clock" class="header-clock"></span>
+        <span th:text="'Welcome! ' + ${loggedUser.email}"></span>
+        <a th:href="@{/logout}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</div>
+
+<!-- GRID -->
+<div class="tasks-grid-container">
+    <div th:if="${tasks != null and !tasks.empty}" th:each="task : ${tasks}" class="task-card">
+        <div class="task-header">
+            <h3 class="task-title" th:text="${task.title}">Title</h3>
+            <p class="task-description" th:text="${task.description}">Description</p>
+        </div>
+        <div class="task-meta">
+            <span class="status-badge"
+                  th:classappend="${task.status.cssClass}"
+                  th:text="${task.status.displayName}"></span>
+
+
+
+            <span class="priority-badge ms-1"
+                  th:classappend="${task.priority == 'HIGH'} ? ' high' :
+                                  (${task.priority == 'MEDIUM'} ? ' medium' : ' low')"
+                  th:text="${task.priority}"></span>
+        </div>
+        <div class="task-actions">
+            <a th:href="@{/api/view/{id}(id=${task.id})}" class="btn-action btn-view">View</a>
+            <a th:href="@{/api/form/{id}(id=${task.id})}" class="btn-action btn-edit">Edit</a>
+            <a th:href="@{/api/task/{id}(id=${task.id})}" onclick="return confirm('Delete this task?')" class="btn-action btn-delete">Delete</a>
+        </div>
+    </div>
+
+    <div th:if="${tasks == null or tasks.empty}" class="empty-state">
+        <i class="fas fa-clipboard-list fa-2x mb-1"></i>
+        <h5>No tasks found</h5>
+    </div>
+</div>
+
+<!-- PAGINATION -->
+<nav class="pagination-container">
+    <ul class="pagination">
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link" th:href="@{/api/grid(pageNo=${currentPage - 1}, pageSize=${pageSize})}">Previous</a>
+        </li>
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link" th:href="@{/api/grid(pageNo=${i}, pageSize=${pageSize})}" th:text="${i + 1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+            <a class="page-link" th:href="@{/api/grid(pageNo=${currentPage + 1}, pageSize=${pageSize})}">Next</a>
+        </li>
+    </ul>
+</nav>
+
+<!-- FOOTER -->
+<footer>
+    Task Reminder App © 2025 — Created by Bishwanath Kumam
+</footer>
+
+<!-- CLOCK SCRIPT -->
+<script>
+    function updateClock() {
+        document.getElementById("clock").innerText =
+            "🕒 " + new Date().toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+</body>
+</html>

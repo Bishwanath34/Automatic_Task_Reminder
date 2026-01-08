@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="appHeader">
+
+    <div class="page-header">
+
+        <!-- LEFT : Welcome -->
+        <div class="header-left">
+            <span th:if="${loggedUser != null}"
+                  th:text="'Welcome! ' + ${loggedUser.email}">
+            </span>
+        </div>
+
+        <!-- CENTER : Icons -->
+        <div class="header-center">
+            <a th:href="@{/api/tasks}" title="List View">
+                <i class="fa-solid fa-list"></i>
+            </a>
+            <a th:href="@{/api/cal}" title="Calendar View">
+                <i class="fa-solid fa-calendar"></i>
+            </a>
+            <a th:href="@{/api/grid}" title="Grid View">
+                <i class="fa-solid fa-table-cells"></i>
+            </a>
+        </div>
+
+        <!-- RIGHT : Logout -->
+        <div class="header-right">
+            <a th:href="@{/logout}" class="btn-auth logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
