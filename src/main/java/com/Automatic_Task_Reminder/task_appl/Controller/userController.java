@@ -14,20 +14,19 @@ public class userController {
     @Autowired
     private UserService userService;
 
-    // Landing page
+
     @GetMapping("/")
     public String landingPage() {
         return "landing";
     }
 
-    // Registration form
+
     @GetMapping("/regisForm")
     public String regisForm(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
 
-    // Register user
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user, Model model) {
         try {
@@ -40,14 +39,14 @@ public class userController {
         }
     }
 
-    // Login form
+
     @GetMapping("/loginForm")
     public String loginForm(Model model) {
         model.addAttribute("logUser", new User());
         return "login";
     }
 
-    // Login user
+
     @PostMapping("/login")
     public String login(@ModelAttribute("logUser") User user, HttpSession session, Model model) {
         try {
@@ -60,7 +59,7 @@ public class userController {
         }
     }
 
-    // Verify OTP
+
     @PostMapping("/verify-otp/{id}")
     public String verifyOtp(
             @RequestParam String d1,
@@ -88,7 +87,7 @@ public class userController {
         }
     }
 
-    // Resend OTP
+
     @GetMapping("/resend-otp/{id}")
     public String resendOtp(@PathVariable Integer id, Model model) {
         try {
@@ -103,7 +102,7 @@ public class userController {
         }
     }
 
-    // Logout
+
     @GetMapping("/logout")
     public String logout(HttpSession session, Model model) {
         try {

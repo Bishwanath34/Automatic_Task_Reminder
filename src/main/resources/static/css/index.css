@@ -1,0 +1,219 @@
+
+        /* ================= GLOBAL ================= */
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: "Segoe UI", system-ui, sans-serif;
+ }
+
+ body {
+     background: #f4f6f9;
+     min-height: 100vh;
+     display: flex;
+     flex-direction: column;
+     padding-top: 60px;   /* header height */
+     padding-bottom: 50px; /* footer height */
+     overflow: hidden;
+ }
+
+ /* ================= HEADER ================= */
+ .page-header {
+     position: fixed;
+     top: 0;
+     left: 0;
+     right: 0;
+     height: 60px;
+     display: flex;
+     align-items: center;
+     padding: 0 20px;
+     background: linear-gradient(135deg, #4b6cb7, #182848);
+     color: white;
+     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+     z-index: 1000;
+ }
+
+ /* LEFT - TITLE */
+ .header-title-left {
+     font-size: 20px;
+     font-weight: 600;
+     white-space: nowrap;
+     min-width: 220px;
+ }
+
+ /* CENTER - ICONS */
+ .header-icons-center {
+     flex: 1;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     gap: 22px;
+ }
+
+ .header-icons-center a {
+     color: white;
+     font-size: 18px;
+     text-decoration: none;
+     transition: transform 0.2s ease, opacity 0.2s ease;
+ }
+
+ .header-icons-center a:hover {
+     transform: scale(1.15);
+     opacity: 0.85;
+ }
+
+ /* RIGHT - CLOCK + USER + LOGOUT */
+ .header-icons-right {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+     white-space: nowrap;
+ }
+
+ .header-clock {
+     font-size: 13px;
+     opacity: 0.9;
+ }
+
+ .header-icons-right span {
+     font-size: 13px;
+ }
+
+ /* Logout */
+ .logout-btn {
+     background: rgba(255,255,255,0.25);
+     color: white;
+     padding: 6px 14px;
+     border-radius: 18px;
+     font-size: 13px;
+     text-decoration: none;
+     transition: all 0.25s ease;
+ }
+
+ .logout-btn:hover {
+     background: white;
+     color: #182848;
+ }
+
+ /* ================= FILTER CARD ================= */
+ .filter-card {
+     background: #fff;
+     padding: 14px;
+     border-radius: 10px;
+     box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+     margin: 10px;
+     display: flex;
+     flex-wrap: wrap;
+     align-items: flex-end;
+     gap: 8px;
+ }
+
+ .filter-card label {
+     font-weight: 500;
+     font-size: 13px;
+ }
+
+ .filter-card select,
+ .filter-card input {
+     font-size: 13px;
+     padding: 5px 8px;
+ }
+
+ .filter-card .action-group {
+     margin-left: auto;
+     display: flex;
+     gap: 6px;
+ }
+
+ /* ================= TABLE ================= */
+ .table-container {
+     flex: 1;
+     overflow: auto;
+     margin: 0 10px;
+ }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 13px;
+ }
+
+ .table th,
+ .table td {
+     padding: 6px 8px;
+     text-align: center;
+ }
+
+ .table thead th {
+     background: #212529;
+     color: white;
+ }
+
+ .table-hover tbody tr:hover {
+     background: #f1f4ff;
+ }
+
+ .btn-sm {
+     font-size: 11px;
+     padding: 3px 6px;
+     border-radius: 5px;
+ }
+
+ /* ================= PAGINATION ================= */
+ .pagination {
+     font-size: 12px;
+     margin: 10px 0;
+ }
+
+ .page-item .page-link {
+     border-radius: 6px;
+     margin: 0 2px;
+ }
+
+ .page-item.active .page-link {
+     background: linear-gradient(135deg, #667eea, #764ba2);
+     border-color: #667eea;
+     color: white;
+ }
+
+ /* ================= FOOTER ================= */
+ footer {
+     position: fixed;
+     bottom: 0;
+     left: 0;
+     right: 0;
+     height: 50px;
+     background: #212529;
+     color: white;
+     text-align: center;
+     line-height: 50px;
+     font-size: 13px;
+ }
+
+ /* ================= RESPONSIVE ================= */
+ @media (max-width: 768px) {
+     .header-title-left {
+         font-size: 16px;
+         min-width: auto;
+     }
+
+     .header-icons-center {
+         gap: 14px;
+     }
+
+     .header-icons-center a {
+         font-size: 16px;
+     }
+
+     .header-clock {
+         display: none;
+     }
+
+     table,
+     th,
+     td {
+         font-size: 11px;
+     }
+ }
+
+

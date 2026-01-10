@@ -1,0 +1,115 @@
+        /* ================= GLOBAL ================= */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: "Segoe UI", system-ui, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= HEADER (SAME AS INDEX) ================= */
+        .page-header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .back-btn {
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .header-clock {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* LOGOUT — SAME AS INDEX */
+        .logout-btn {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #182848;
+        }
+
+        /* ================= MAIN CONTENT ================= */
+        .container {
+            flex: 1 1 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .task-card {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .task-card h3 {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .task-card p {
+            font-size: 13px;
+            text-align: center;
+            color: #555;
+        }
+
+        .form-label {
+            font-size: 13px;
+        }
+
+        .form-control,
+        .form-select {
+            font-size: 13px;
+            padding: 5px 8px;
+        }
+
+        /* ================= FOOTER ================= */
+        .app-footer {
+            padding: 12px 0;
+            background: #212529;
+            color: #ffffff;
+            text-align: center;
+            font-size: 14px;
+        }

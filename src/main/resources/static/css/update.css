@@ -1,0 +1,136 @@
+
+        /* ================= GLOBAL ================= */
+        body {
+            background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 60px;
+            padding-bottom: 50px;
+            font-family: "Segoe UI", system-ui, sans-serif;
+        }
+
+        /* ================= HEADER (SAME AS INDEX) ================= */
+        .page-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .header-clock {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* LOGOUT — SAME AS INDEX */
+        .logout-btn {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #182848;
+        }
+
+        /* ================= FORM CARD ================= */
+        .container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-card {
+            max-width: 450px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .task-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .task-card p {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-control,
+        .form-select {
+            font-size: 13px;
+            padding: 5px 8px;
+            border-radius: 8px;
+        }
+
+        textarea.form-control {
+            resize: none;
+        }
+
+        .btn {
+            font-size: 14px;
+            padding: 6px;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: #212529;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            font-size: 13px;
+        }
+
