@@ -53,7 +53,6 @@ public class TaskService {
         return taskRepository.findByUserId(userId, PageRequest.of(pageNo, pageSize, sort));
     }
 
-    // Total count for pagination
     public long getTotalCountByUser(Integer userId, StatusEnum status, PriorityEnum priority, String filter) {
         if (status != null || priority != null || (filter != null && !filter.isEmpty())) {
             if (status != null && priority != null && filter != null && !filter.isEmpty()) {

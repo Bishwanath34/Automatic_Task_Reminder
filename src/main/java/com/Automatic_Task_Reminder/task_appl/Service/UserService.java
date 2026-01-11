@@ -19,7 +19,6 @@ public class UserService {
     @Autowired
     private EmailServiceClass emailServiceClass;
 
-    // Register user and send OTP
     public User register(User user) {
         User existingUser = userRepository.findByEmail(user.getEmail()).orElse(null);
         if (existingUser != null) throw new RuntimeException("User already exists!");
@@ -27,12 +26,10 @@ public class UserService {
         user.setCreatedAt(LocalDateTime.now());
         user.setVerified(false);
 
-        // Generate OTP
         String otp = String.valueOf(new SecureRandom().nextInt(900000) + 100000);
         user.setOtp(otp);
         user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(5));
 
-        // Send OTP email
         MailDto mail = new MailDto.Builder()
                 .sendTo(user.getEmail())
                 .text("Your OTP is: " + otp)
@@ -43,7 +40,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Login user
+
     public User login(String email, String password, HttpSession session) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -51,7 +48,7 @@ public class UserService {
         if (!user.isVerified()) throw new RuntimeException("User is not verified. Please verify OTP first.");
         if (!user.getPassword().equals(password)) throw new RuntimeException("Invalid password");
 
-        // Store in session
+
         session.setAttribute("LoggedInUser", user.getId());
         session.setAttribute("UserId", user.getId());
         session.setAttribute("email", user.getEmail());
@@ -60,7 +57,6 @@ public class UserService {
         return user;
     }
 
-    // Validate OTP
     public boolean validateOtp(String enteredOtp, Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -78,7 +74,6 @@ public class UserService {
         return false;
     }
 
-    // Resend OTP
     public void resendOtp(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

@@ -23,7 +23,7 @@
     </div>
     <div class="header-right">
         <span id="clock" class="header-clock"></span>
-        <span th:text="'Welcome! ' + ${loggedUser.email}"></span>
+        <span th:text="'Welcome! ' + ${loggedUser.name}"></span>
         <a th:href="@{/logout}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 </div>

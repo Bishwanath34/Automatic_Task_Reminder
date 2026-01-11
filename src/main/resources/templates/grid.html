@@ -15,7 +15,6 @@
 
 <body>
 
-<!-- HEADER -->
 <div class="page-header">
     <div class="header-left">
         <a th:href="@{/api/tasks}" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
@@ -23,12 +22,12 @@
     </div>
     <div class="header-right">
         <span id="clock" class="header-clock"></span>
-        <span th:text="'Welcome! ' + ${loggedUser.email}"></span>
+        <span th:text="'Welcome! ' + ${loggedUser.name}"></span>
         <a th:href="@{/logout}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
 </div>
 
-<!-- GRID -->
+
 <div class="tasks-grid-container">
     <div th:if="${tasks != null and !tasks.empty}" th:each="task : ${tasks}" class="task-card">
         <div class="task-header">
@@ -60,7 +59,7 @@
     </div>
 </div>
 
-<!-- PAGINATION -->
+
 <nav class="pagination-container">
     <ul class="pagination">
         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
@@ -76,12 +75,11 @@
     </ul>
 </nav>
 
-<!-- FOOTER -->
+
 <footer>
     Task Reminder App © 2025 — Created by Bishwanath Kumam
 </footer>
 
-<!-- CLOCK SCRIPT -->
 <script>
     function updateClock() {
         document.getElementById("clock").innerText =

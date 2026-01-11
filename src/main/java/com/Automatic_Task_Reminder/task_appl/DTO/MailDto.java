@@ -7,7 +7,7 @@ public class MailDto {
     private String subject;
     private String attachment;
 
-    // ✅ Private constructor (forces use of Builder)
+
     private MailDto(Builder builder) {
         this.sendTo = builder.sendTo;
         this.text = builder.text;
@@ -15,7 +15,7 @@ public class MailDto {
         this.attachment = builder.attachment;
     }
 
-    // ✅ Getters
+
     public String getSendTo() {
         return sendTo;
     }
@@ -32,7 +32,6 @@ public class MailDto {
         return attachment;
     }
 
-    // ✅ Builder static inner class
     public static class Builder {
         private String sendTo;
         private String text;

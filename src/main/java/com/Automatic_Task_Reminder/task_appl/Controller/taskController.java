@@ -23,7 +23,7 @@ public class taskController {
     @Autowired
     private TaskService taskService;
 
-    // List tasks for logged-in user
+
     @GetMapping("/tasks")
     public String getTasks(
             Model model,
@@ -82,7 +82,9 @@ public class taskController {
     }
 
     @GetMapping("/task/success")
-    public String success() {
+    public String success(HttpSession session) {
+        User loggedUser = (User) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/loginForm";
         return "success";
     }
 

@@ -5,16 +5,16 @@
     <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/register.css}">
 
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
+
 <div class="page-header">
     <div class="header-left">
         <a th:href="@{/loginForm}" title="Back"><i class="fa-solid fa-arrow-left"></i></a>
@@ -23,8 +23,7 @@
     <span id="clock" class="header-clock"></span>
 </div>
 
-<!-- ===== REGISTER FORM ===== -->
-<!-- ===== REGISTER FORM ===== -->
+
 <div class="login-wrapper">
     <div class="login-card">
         <div class="login-header">Register</div>
@@ -58,14 +57,12 @@
 </div>
 
 
-<!-- ===== FOOTER ===== -->
+
 <footer class="app-footer">
     Task Reminder App © 2025 — Created by Bishwanath Kumam
 </footer>
 
-<!-- ===== CLOCK SCRIPT ===== -->
 
-<!-- ===== PASSWORD TOGGLE SCRIPT ===== -->
 <script>
     const registerToggle = document.querySelector('#registerPassword + .toggle-password');
     const registerPassword = document.getElementById('registerPassword');
