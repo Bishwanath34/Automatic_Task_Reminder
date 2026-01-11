@@ -1,6 +1,7 @@
 package com.Automatic_Task_Reminder.task_appl.Service;
 
 import com.Automatic_Task_Reminder.task_appl.DTO.MailDto;
+import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;

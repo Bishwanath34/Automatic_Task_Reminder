@@ -5,7 +5,10 @@ import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
 import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<taskModel, Long> {
@@ -35,4 +38,11 @@ public interface TaskRepository extends JpaRepository<taskModel, Long> {
     long countByUserIdAndStatusAndTitleContainingIgnoreCase(Integer userId, StatusEnum status, String title);
     long countByUserIdAndPriorityAndTitleContainingIgnoreCase(Integer userId, PriorityEnum priority, String title);
     long countByUserIdAndStatusAndPriorityAndTitleContainingIgnoreCase(Integer userId, StatusEnum status, PriorityEnum priority, String title);
+
+    @Query("""
+            SELECT t FROM taskModel t
+            WHERE t.dueDate= :tomorrow
+            AND t.reminderSent=false
+            """)
+    List<taskModel> findTasksDueTomorrow(@Param("tomorrow") LocalDate tomorrow);
 }

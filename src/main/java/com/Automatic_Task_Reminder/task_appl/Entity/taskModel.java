@@ -17,21 +17,6 @@ public class taskModel {
         return user;
     }
 
-    @Override
-    public String toString() {
-        return "taskModel{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", user=" + user +
-                ", description='" + description + '\'' +
-                ", dueDate=" + dueDate +
-                ", status=" + status +
-                ", priority=" + priority +
-                ", createdAt=" + createdAt +
-                ", completedAt=" + completedAt +
-                '}';
-    }
-
     public void setUser(User user) {
         this.user = user;
     }
@@ -65,10 +50,34 @@ public class taskModel {
     private PriorityEnum priority;
 
     private LocalDateTime createdAt;
-private LocalDateTime completedAt;
 
+    @Override
+    public String toString() {
+        return "taskModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", user=" + user +
+                ", description='" + description + '\'' +
+                ", dueDate=" + dueDate +
+                ", status=" + status +
+                ", priority=" + priority +
+                ", createdAt=" + createdAt +
+                ", completedAt=" + completedAt +
+                ", reminderSent=" + reminderSent +
+                '}';
+    }
 
+    private LocalDateTime completedAt;
 
+private boolean reminderSent;
+
+    public boolean isReminderSent() {
+        return reminderSent;
+    }
+
+    public void setReminderSent(boolean reminderSent) {
+        this.reminderSent = reminderSent;
+    }
 
     public long getId() {
         return id;
