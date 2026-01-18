@@ -14,7 +14,8 @@
      flex-direction: column;
      padding-top: 60px;   /* header height */
      padding-bottom: 50px; /* footer height */
-     overflow: hidden;
+     overflow-x: hidden;   /* prevent sideways scroll */
+         overflow-y: auto;     /* allow content + header */
  }
 
  /* ================= HEADER ================= */
@@ -175,7 +176,24 @@
      border-color: #667eea;
      color: white;
  }
+/* ===== PROFILE PIC (ADD ONLY) ===== */
+.profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
 
+.profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.8);
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+}
  /* ================= FOOTER ================= */
  footer {
      position: fixed;
@@ -215,5 +233,4 @@
          font-size: 11px;
      }
  }
-
 

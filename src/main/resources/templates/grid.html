@@ -21,10 +21,34 @@
         ⏰ Task Reminder App
     </div>
     <div class="header-right">
+
         <span id="clock" class="header-clock"></span>
-        <span th:text="'Welcome! ' + ${loggedUser.name}"></span>
-        <a th:href="@{/logout}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+
+        <span th:text="${loggedUser != null} ? 'Welcome! ' + ${loggedUser.name} : 'Guest'"></span>
+
+        <!-- PROFILE PIC (ONLY ADDITION) -->
+        <a th:href="@{/profile}" class="profile-link" title="Profile">
+
+            <!-- User image -->
+            <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
+                 th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
+                 class="profile-pic"
+                 alt="Profile"/>
+
+            <!-- Default icon -->
+            <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
+                 src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                 class="profile-pic"
+                 alt="Default Profile"/>
+
+        </a>
+
+        <a th:href="@{/logout}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+
     </div>
+
 </div>
 
 

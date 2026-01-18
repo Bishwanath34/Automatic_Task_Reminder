@@ -1,5 +1,6 @@
 package com.Automatic_Task_Reminder.task_appl.Controller;
 
+import com.Automatic_Task_Reminder.task_appl.DTO.UserProfileDto;
 import com.Automatic_Task_Reminder.task_appl.Entity.User;
 import com.Automatic_Task_Reminder.task_appl.Service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 public class userController {
@@ -113,4 +117,70 @@ public class userController {
         }
         return "landing";
     }
+    @PostMapping("/user/{id}/upload-profile")
+    public String uploadProfileImage(
+            @PathVariable Integer id,
+            @RequestParam("file") MultipartFile file,
+            HttpSession session
+    ) {
+        User loggedUser = (User) session.getAttribute("loggedUser");
+        if (loggedUser == null || !loggedUser.getId().equals(id)) {
+            return "redirect:/loginForm";
+        }
+
+        try {
+            // Save image
+            userService.uploadProfileImage(id, file);
+
+            // Reload updated user from DB
+            User updatedUser = userService.findById(id);
+
+            // Update session
+            session.setAttribute("loggedUser", updatedUser);
+
+            return "redirect:/profile";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+    @GetMapping("/profile")
+    public String progfile(HttpSession session,Model model){
+    User loggedUser = (User) session.getAttribute("loggedUser");
+    if (loggedUser == null) return "redirect:/loginForm";
+    UserProfileDto profileDTO = userService.mapToProfileDTO(loggedUser);
+    model.addAttribute("user", profileDTO);
+
+    return "profile";
+}
+    @PostMapping("/user/{id}/remove-profile")
+    public String removeProfileImage(
+            @PathVariable Integer id,
+            HttpSession session
+    ) {
+        User loggedUser = (User) session.getAttribute("loggedUser");
+
+        // Security check
+        if (loggedUser == null || !loggedUser.getId().equals(id)) {
+            return "redirect:/loginForm";
+        }
+
+        try {
+            // Remove image in DB
+            userService.removeProfileImage(id);
+
+            // Reload updated user
+            User updatedUser = userService.findById(id);
+
+            // Update session
+            session.setAttribute("loggedUser", updatedUser);
+
+            return "redirect:/profile";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
 }

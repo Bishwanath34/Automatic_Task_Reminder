@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Profile</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        .profile-card {
+            max-width: 450px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .profile-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #4b6cb7;
+            margin-bottom: 15px;
+        }
+
+        .default-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: #9e9e9e;
+            margin: 0 auto 15px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .profile-email {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .change-text {
+            font-size: 13px;
+            color: #4b6cb7;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="profile-card">
+
+    <!-- Profile Image -->
+    <div>
+        <!-- Show uploaded image -->
+        <img th:if="${user.profileImageBase64 != null}"
+             th:src="'data:image/jpeg;base64,' + ${user.profileImageBase64}"
+             class="profile-img"/>
+
+        <!-- Default avatar -->
+        <div th:if="${user.profileImageBase64 == null}"
+             class="default-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+    </div>
+
+    <!-- User Info -->
+    <div class="profile-name" th:text="${user.name}"></div>
+    <div class="profile-email" th:text="${user.email}"></div>
+
+    <hr>
+
+    <!-- Upload / Change Profile Image -->
+    <form th:action="@{/user/{id}/upload-profile(id=${user.id})}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="mb-2">
+            <input type="file"
+                   name="file"
+                   class="form-control"
+                   accept="image/*"
+                   required>
+        </div>
+
+        <button class="btn btn-primary w-100 mb-2">
+            <i class="fa-solid fa-camera"></i>
+            <span th:text="${user.profileImageBase64 != null} ? 'Change Profile Image' : 'Upload Profile Image'"></span>
+        </button>
+    </form>
+
+    <!-- ===== Remove Profile Image ===== -->
+    <form th:if="${user.profileImageBase64 != null}"
+          th:action="@{/user/{id}/remove-profile(id=${user.id})}"
+          method="post">
+
+        <button class="btn btn-outline-danger w-100">
+            <i class="fa-solid fa-trash"></i> Remove Profile Image
+        </button>
+    </form>
+
+    <hr>
+
+    <!-- Actions -->
+    <a th:href="@{/api/tasks?pageNo=0&pageSize=5}"
+       class="btn btn-outline-secondary w-100 mb-2">
+        <i class="fa-solid fa-arrow-left"></i> Back to Tasks
+    </a>
+
+    <a th:href="@{/logout}"
+       class="btn btn-danger w-100">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+
+</div>
+
+</body>
+</html>

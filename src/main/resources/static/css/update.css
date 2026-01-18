@@ -120,6 +120,25 @@
             padding: 6px;
         }
 
+/* ===== PROFILE PIC (ADD ONLY) ===== */
+.profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.8);
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+}
+
         /* ================= FOOTER ================= */
         footer {
             position: fixed;

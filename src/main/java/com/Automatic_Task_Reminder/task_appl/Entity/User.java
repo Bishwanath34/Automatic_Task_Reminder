@@ -1,12 +1,10 @@
 package com.Automatic_Task_Reminder.task_appl.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Entity
 public class User {
@@ -17,20 +15,6 @@ public class User {
 
     public LocalDateTime getOtpExpiryTime() {
         return otpExpiryTime;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", otpExpiryTime=" + otpExpiryTime +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", verified=" + verified +
-                ", createdAt=" + createdAt +
-                ", otp='" + otp + '\'' +
-                '}';
     }
 
     public void setOtpExpiryTime(LocalDateTime otpExpiryTime) {
@@ -50,8 +34,35 @@ public class User {
     @Email
     private String email;
     private String password;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", otpExpiryTime=" + otpExpiryTime +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", verified=" + verified +
+                ", createdAt=" + createdAt +
+                ", profileImage=" + Arrays.toString(profileImage) +
+                ", otp='" + otp + '\'' +
+                '}';
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(byte[] profileImage) {
+        this.profileImage = profileImage;
+    }
+
     private boolean verified=false;
     private LocalDateTime createdAt;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] profileImage;
     private String otp;
     public User(){
     }
@@ -61,7 +72,11 @@ public class User {
         this.password=password;
 this.createdAt=createdAt;
     }
-
+    @Transient
+    public String getProfileImageBase64() {
+        if (profileImage == null) return null;
+        return java.util.Base64.getEncoder().encodeToString(profileImage);
+    }
     public Integer getId() {
         return id;
     }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<taskModel, Long> {
@@ -45,4 +46,16 @@ public interface TaskRepository extends JpaRepository<taskModel, Long> {
             AND t.reminderSent=false
             """)
     List<taskModel> findTasksDueTomorrow(@Param("tomorrow") LocalDate tomorrow);
+    @Query("""
+    SELECT COUNT(t)
+    FROM taskModel t
+    WHERE t.user.id = :userId
+      AND t.dueDate < :today
+      AND t.status = com.Automatic_Task_Reminder.task_appl.enums.StatusEnum.PENDING
+""")
+    long countOverdueTasks(
+            @Param("userId") Integer userId,
+            @Param("today") LocalDate today
+    );
+
 }

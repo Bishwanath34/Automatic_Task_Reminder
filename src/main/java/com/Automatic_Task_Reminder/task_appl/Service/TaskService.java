@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -125,5 +126,22 @@ public class TaskService {
 
     public List<taskModel> getAllTasksByUser(Integer userId) {
         return taskRepository.findByUserId(userId);
+    }
+
+    public long countAllTasks(Integer userId) {
+        return taskRepository.countByUserId(userId);
+    }
+
+    public long  countCompleted(Integer userId) {
+        return taskRepository.countByUserIdAndStatus(userId,StatusEnum.DONE);
+    }
+
+
+    public long  countPending(Integer userId) {
+        return taskRepository.countByUserIdAndStatus(userId,StatusEnum.PENDING);
+    }
+
+    public long countOverdue(Integer userId) {
+        return taskRepository.countOverdueTasks(userId, LocalDate.now());
     }
 }
