@@ -7,6 +7,7 @@ import com.Automatic_Task_Reminder.task_appl.Service.TaskService;
 import com.Automatic_Task_Reminder.task_appl.Service.UserService;
 import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
 import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,5 +192,14 @@ public class taskController {
 
         return "grid";
     }
+@GetMapping("/csv/download")
+    public void downloadcsv(HttpServletResponse response,HttpSession session){
+        User loggedUser=(User) session.getAttribute("loggedUser");
+        try{
+            taskService.downloadcsv(response,loggedUser.getId());
+        }catch(Exception e){
+            throw new RuntimeException("error while downloading the csv ....");
+        }
+}
 
 }

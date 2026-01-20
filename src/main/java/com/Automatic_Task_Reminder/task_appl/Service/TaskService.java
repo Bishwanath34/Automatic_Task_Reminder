@@ -4,6 +4,7 @@ import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
 import com.Automatic_Task_Reminder.task_appl.Repository.TaskRepository;
 import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
 import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -12,6 +13,9 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -144,4 +148,33 @@ public class TaskService {
     public long countOverdue(Integer userId) {
         return taskRepository.countOverdueTasks(userId, LocalDate.now());
     }
+
+    public void downloadcsv(HttpServletResponse response, Integer id) throws Exception {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition","attachment; filename=users.csv");
+List<taskModel> tasks=taskRepository.findByUserId(id);
+CSVPrinter printer=new CSVPrinter(
+        response.getWriter(),
+        CSVFormat.DEFAULT.withHeader(
+                "ID", "Title", "User", "Description", "DueDate", "Status", "Priority", "CreatedAt", "CompletedAt", "ReminderSent"
+        )
+);
+for(taskModel task:tasks){
+    printer.printRecord(
+            task.getId(),
+            task.getTitle(),
+            task.getUser(),
+            task.getDescription(),
+            task.getDueDate(),
+            task.getStatus(),
+            task.getPriority(),
+            task.getCreatedAt(),
+            task.getCompletedAt(),
+            task.isReminderSent()
+    );
+}
+printer.flush();
+    }
+
+
 }
