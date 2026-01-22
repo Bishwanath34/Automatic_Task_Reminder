@@ -7,73 +7,81 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/grid.css}">
 
+    <!-- Grid CSS -->
+    <link rel="stylesheet" th:href="@{/css/grid.css}">
 </head>
 
 <body>
 
+<!-- ================= HEADER ================= -->
 <div class="page-header">
     <div class="header-left">
-        <a th:href="@{/api/tasks}" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <a th:href="@{/api/tasks}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
         ⏰ Task Reminder App
     </div>
-    <div class="header-right">
 
+    <div class="header-right">
         <span id="clock" class="header-clock"></span>
 
         <span th:text="${loggedUser != null} ? 'Welcome! ' + ${loggedUser.name} : 'Guest'"></span>
 
-        <!-- PROFILE PIC (ONLY ADDITION) -->
-        <a th:href="@{/profile}" class="profile-link" title="Profile">
+        <!-- DARK MODE -->
+        <i id="themeIcon" class="fa-solid fa-moon theme-toggle"></i>
 
-            <!-- User image -->
+        <!-- PROFILE -->
+        <a th:href="@{/profile}" class="profile-link" title="Profile">
             <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
                  th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
-                 class="profile-pic"
-                 alt="Profile"/>
-
-            <!-- Default icon -->
+                 class="profile-pic">
             <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
                  src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                 class="profile-pic"
-                 alt="Default Profile"/>
-
+                 class="profile-pic">
         </a>
 
         <a th:href="@{/logout}" class="logout-btn">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
         </a>
-
     </div>
-
 </div>
 
-
+<!-- ================= GRID ================= -->
 <div class="tasks-grid-container">
-    <div th:if="${tasks != null and !tasks.empty}" th:each="task : ${tasks}" class="task-card">
+    <div th:if="${tasks != null and !tasks.empty}"
+         th:each="task : ${tasks}"
+         class="task-card">
+
         <div class="task-header">
             <h3 class="task-title" th:text="${task.title}">Title</h3>
             <p class="task-description" th:text="${task.description}">Description</p>
         </div>
+
         <div class="task-meta">
             <span class="status-badge"
                   th:classappend="${task.status.cssClass}"
-                  th:text="${task.status.displayName}"></span>
-
-
+                  th:text="${task.status.displayName}">
+            </span>
 
             <span class="priority-badge ms-1"
                   th:classappend="${task.priority == 'HIGH'} ? ' high' :
                                   (${task.priority == 'MEDIUM'} ? ' medium' : ' low')"
-                  th:text="${task.priority}"></span>
+                  th:text="${task.priority}">
+            </span>
         </div>
+
         <div class="task-actions">
             <a th:href="@{/api/view/{id}(id=${task.id})}" class="btn-action btn-view">View</a>
             <a th:href="@{/api/form/{id}(id=${task.id})}" class="btn-action btn-edit">Edit</a>
-            <a th:href="@{/api/task/{id}(id=${task.id})}" onclick="return confirm('Delete this task?')" class="btn-action btn-delete">Delete</a>
+            <a th:href="@{/api/task/{id}(id=${task.id})}"
+               onclick="return confirm('Delete this task?')"
+               class="btn-action btn-delete">
+                Delete
+            </a>
         </div>
     </div>
 
@@ -83,34 +91,70 @@
     </div>
 </div>
 
-
+<!-- ================= PAGINATION ================= -->
 <nav class="pagination-container">
     <ul class="pagination">
         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-            <a class="page-link" th:href="@{/api/grid(pageNo=${currentPage - 1}, pageSize=${pageSize})}">Previous</a>
+            <a class="page-link"
+               th:href="@{/api/grid(pageNo=${currentPage - 1}, pageSize=${pageSize})}">
+                Previous
+            </a>
         </li>
-        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
             th:classappend="${i == currentPage} ? 'active'">
-            <a class="page-link" th:href="@{/api/grid(pageNo=${i}, pageSize=${pageSize})}" th:text="${i + 1}"></a>
+            <a class="page-link"
+               th:href="@{/api/grid(pageNo=${i}, pageSize=${pageSize})}"
+               th:text="${i + 1}">
+            </a>
         </li>
+
         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-            <a class="page-link" th:href="@{/api/grid(pageNo=${currentPage + 1}, pageSize=${pageSize})}">Next</a>
+            <a class="page-link"
+               th:href="@{/api/grid(pageNo=${currentPage + 1}, pageSize=${pageSize})}">
+                Next
+            </a>
         </li>
     </ul>
 </nav>
 
-
+<!-- ================= FOOTER ================= -->
 <footer>
     Task Reminder App © 2025 — Created by Bishwanath Kumam
 </footer>
 
+<!-- ================= SCRIPTS ================= -->
 <script>
+    // CLOCK
     function updateClock() {
         document.getElementById("clock").innerText =
             "🕒 " + new Date().toLocaleTimeString();
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // DARK MODE
+    const themeIcon = document.getElementById("themeIcon");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("dark-mode", theme === "dark");
+        themeIcon.className =
+            theme === "dark"
+                ? "fa-solid fa-sun theme-toggle"
+                : "fa-solid fa-moon theme-toggle";
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    themeIcon.onclick = () => {
+        const newTheme = document.body.classList.contains("dark-mode")
+            ? "light"
+            : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+    };
 </script>
 
 </body>

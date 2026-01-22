@@ -10,7 +10,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/view.css}">
-
 </head>
 
 <body>
@@ -27,29 +26,25 @@
 
         <span th:text="${loggedUser != null} ? 'Welcome! ' + ${loggedUser.name} : 'Guest'"></span>
 
-        <!-- PROFILE PIC (ONLY ADDITION) -->
-        <a th:href="@{/profile}" class="profile-link" title="Profile">
+        <!-- DARK MODE TOGGLE -->
+        <i id="themeIcon" class="fa-solid fa-moon theme-toggle" title="Toggle Dark Mode"></i>
 
-            <!-- User image -->
+        <!-- PROFILE PIC -->
+        <a th:href="@{/profile}" class="profile-link" title="Profile">
             <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
                  th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
                  class="profile-pic"
                  alt="Profile"/>
-
-            <!-- Default icon -->
             <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
                  src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
                  class="profile-pic"
                  alt="Default Profile"/>
-
         </a>
 
         <a th:href="@{/logout}" class="logout-btn">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
         </a>
-
     </div>
-
 </div>
 
 <!-- TASK CARD -->
@@ -104,6 +99,23 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // Dark Mode
+    const themeIcon = document.getElementById("themeIcon");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("dark-mode", theme === "dark");
+        themeIcon.className = theme === "dark" ? "fa-solid fa-sun theme-toggle" : "fa-solid fa-moon theme-toggle";
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    themeIcon.onclick = () => {
+        const newTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+    };
 </script>
 
 </body>

@@ -10,7 +10,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-
 </head>
 
 <body>
@@ -18,41 +17,32 @@
 <!-- ================= HEADER ================= -->
 <div class="page-header">
     <div class="header-left">
-        <a th:href="@{/api/tasks}" class="back-btn" title="Back">
+        <a th:href="@{/api/tasks}" class="back-btn">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         ⏰ Task Reminder App
     </div>
 
     <div class="header-right">
-
         <span id="clock" class="header-clock"></span>
-
         <span th:text="${loggedUser != null} ? 'Welcome! ' + ${loggedUser.name} : 'Guest'"></span>
 
+        <!-- DARK MODE ICON -->
+        <i id="themeIcon" class="fa-solid fa-moon theme-toggle" title="Toggle theme"></i>
 
-        <a th:href="@{/profile}" class="profile-link" title="Profile">
-
-
+        <a th:href="@{/profile}" class="profile-link">
             <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
                  th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
-                 class="profile-pic"
-                 alt="Profile"/>
-
-
+                 class="profile-pic">
             <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
                  src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                 class="profile-pic"
-                 alt="Default Profile"/>
-
+                 class="profile-pic">
         </a>
 
         <a th:href="@{/logout}" class="logout-btn">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
         </a>
-
     </div>
-
 </div>
 
 <!-- ================= CONTENT ================= -->
@@ -64,36 +54,20 @@
             <a th:href="@{/profile}" class="profile-link">
                 <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
                      th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
-                     class="profile-pic"
-                     alt="Profile"/>
-
+                     class="profile-pic">
                 <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
                      src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                     class="profile-pic"
-                     alt="Default Profile"/>
+                     class="profile-pic">
             </a>
             <div th:text="${loggedUser != null ? loggedUser.name : 'Guest'}"></div>
         </div>
 
+        <a th:href="@{/profile}"><i class="fa-solid fa-user"></i> Profile</a>
+        <a th:href="@{/api/}"><i class="fa-solid fa-plus"></i> Add Task</a>
+        <a th:href="@{/api/cal}"><i class="fa-solid fa-calendar"></i> Calendar</a>
+        <a th:href="@{/api/grid}"><i class="fa-solid fa-table-cells"></i> Grid View</a>
 
-        <a th:href="@{/profile}">
-            <i class="fa-solid fa-user"></i> Profile
-        </a>
-
-        <a th:href="@{/api/}">
-            <i class="fa-solid fa-plus"></i> Add Task
-        </a>
-
-        <a th:href="@{/api/cal}">
-            <i class="fa-solid fa-calendar"></i> Calendar
-        </a>
-
-        <a th:href="@{/api/grid}">
-            <i class="fa-solid fa-table-cells"></i> Grid View
-        </a>
-
-        <!-- Sidebar logout link (regular style, not logout-btn class) -->
-        <a th:href="@{/logout}" style="margin-top: auto;">
+        <a th:href="@{/logout}" style="margin-top:auto;">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
         </a>
     </aside>
@@ -102,7 +76,6 @@
     <main class="main">
         <h2>Tasks Dashboard</h2>
 
-        <!-- CARDS -->
         <section class="cards">
             <div class="card">
                 <h4>Pending</h4>
@@ -120,7 +93,6 @@
             </div>
         </section>
 
-        <!-- CHARTS -->
         <section class="charts">
             <div class="card">
                 <h4>Status Overview</h4>
@@ -132,12 +104,9 @@
                 <canvas id="totalChart"></canvas>
             </div>
         </section>
-
-        <div style="height: 300px;"></div>
     </main>
 </div>
 
-<!-- ================= FOOTER ================= -->
 <footer>
     Task Reminder App © 2025 — Created by Bishwanath Kumam
 </footer>
@@ -149,43 +118,54 @@
     const completed = [[${completedCount}]];
     const total = [[${totalCount}]];
 
-    new Chart(document.getElementById('statusChart'), {
+    new Chart(statusChart, {
         type: 'bar',
         data: {
             labels: ['Pending', 'Overdue', 'Completed'],
             datasets: [{
-                label: 'Tasks',
                 data: [pending, overdue, completed],
                 backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0']
             }]
         },
-        options: {
-            plugins: { legend: { display: false } }
-        }
+        options: { plugins: { legend: { display: false } } }
     });
 
-    new Chart(document.getElementById('totalChart'), {
+    new Chart(totalChart, {
         type: 'doughnut',
         data: {
-            labels: ['Total Tasks'],
             datasets: [{
                 data: [total],
                 backgroundColor: ['#9966ff']
             }]
         },
-        options: {
-            plugins: { legend: { display: false } }
-        }
+        options: { plugins: { legend: { display: false } } }
     });
 
-    // ====== CLOCK / TIMER ======
+    // CLOCK
     function updateClock() {
-        const now = new Date();
-        const time = now.toLocaleTimeString();
-        document.getElementById("clock").innerText = "🕒 " + time;
+        clock.innerText = "🕒 " + new Date().toLocaleTimeString();
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // DARK MODE
+    const themeIcon = document.getElementById("themeIcon");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("dark-mode", theme === "dark");
+        themeIcon.className = theme === "dark"
+            ? "fa-solid fa-sun theme-toggle"
+            : "fa-solid fa-moon theme-toggle";
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    themeIcon.onclick = () => {
+        const newTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+    };
 </script>
 
 </body>
