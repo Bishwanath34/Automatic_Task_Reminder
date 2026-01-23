@@ -1,0 +1,237 @@
+/* ================= GLOBAL ================= */
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: #eef1f5;
+    padding-top: 60px;
+    padding-bottom: 50px;
+    overflow: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ================= HEADER ================= */
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.back-btn {
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-clock {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.header-right span {
+    font-size: 13px;
+}
+
+/* ================= DARK MODE TOGGLE ================= */
+.theme-toggle {
+    cursor: pointer;
+    font-size: 18px;
+    color: white;
+    padding: 6px;
+    border-radius: 50%;
+    transition: background 0.25s ease;
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ================= LOGOUT ================= */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.25);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    height: 32px;
+}
+
+.logout-btn:hover {
+    background: white;
+    color: #182848;
+}
+
+/* ================= PROFILE ================= */
+.profile-link {
+    display: flex;
+    align-items: center;
+}
+
+.page-header .profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.8);
+}
+
+/* ================= FOOTER ================= */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #212529;
+    color: white;
+    text-align: center;
+    line-height: 50px;
+    font-size: 13px;
+}
+
+/* ================= LAYOUT ================= */
+.layout {
+    display: flex;
+    height: calc(100vh - 110px);
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 220px;
+    background: #0f3554;
+    color: white;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.profile-box {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar .profile-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.8);
+}
+
+.profile-box div {
+    margin-top: 4px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Sidebar links */
+.sidebar a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px;
+    font-size: 13px;
+    text-decoration: none;
+    border-radius: 18px;
+    color: #e5e7eb;
+    transition: all 0.25s ease;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* ================= MAIN ================= */
+.main {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* ================= CARDS ================= */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.card {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.value {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* ================= CHARTS ================= */
+.charts {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+}
+
+/* ================================================= */
+/* ================= DARK MODE ===================== */
+/* ================================================= */
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .page-header {
+    background: linear-gradient(135deg, #232526, #414345);
+}
+
+body.dark-mode .sidebar {
+    background: #0b253b;
+}
+
+body.dark-mode .card {
+    background: #1f1f1f;
+    color: #e0e0e0;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+body.dark-mode footer {
+    background: #111;
+}

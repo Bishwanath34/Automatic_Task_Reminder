@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<div class="page-header">
+    <div class="header-left">
+        <a th:href="@{/api/tasks}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        ⏰ Task Reminder App
+    </div>
+
+    <div class="header-right">
+        <span id="clock" class="header-clock"></span>
+        <span th:text="${loggedUser != null} ? 'Welcome! ' + ${loggedUser.name} : 'Guest'"></span>
+
+        <!-- DARK MODE ICON -->
+        <i id="themeIcon" class="fa-solid fa-moon theme-toggle" title="Toggle theme"></i>
+
+        <a th:href="@{/profile}" class="profile-link">
+            <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
+                 th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
+                 class="profile-pic">
+            <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
+                 src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                 class="profile-pic">
+        </a>
+
+        <a th:href="@{/logout}" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- ================= CONTENT ================= -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="profile-box">
+            <a th:href="@{/profile}" class="profile-link">
+                <img th:if="${loggedUser != null && loggedUser.profileImageBase64 != null}"
+                     th:src="'data:image/*;base64,' + ${loggedUser.profileImageBase64}"
+                     class="profile-pic">
+                <img th:if="${loggedUser == null || loggedUser.profileImageBase64 == null}"
+                     src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                     class="profile-pic">
+            </a>
+            <div th:text="${loggedUser != null ? loggedUser.name : 'Guest'}"></div>
+        </div>
+
+        <a th:href="@{/profile}"><i class="fa-solid fa-user"></i> Profile</a>
+        <a th:href="@{/api/}"><i class="fa-solid fa-plus"></i> Add Task</a>
+        <a th:href="@{/api/cal}"><i class="fa-solid fa-calendar"></i> Calendar</a>
+        <a th:href="@{/api/grid}"><i class="fa-solid fa-table-cells"></i> Grid View</a>
+
+        <a th:href="@{/logout}" style="margin-top:auto;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <h2>Tasks Dashboard</h2>
+
+        <section class="cards">
+            <div class="card">
+                <h4>Pending</h4>
+                <div class="value" th:text="${pendingCount}">0</div>
+            </div>
+
+            <div class="card">
+                <h4>Overdue</h4>
+                <div class="value" th:text="${overdueCount}">0</div>
+            </div>
+
+            <div class="card">
+                <h4>Completed</h4>
+                <div class="value" th:text="${completedCount}">0</div>
+            </div>
+        </section>
+
+        <section class="charts">
+            <div class="card">
+                <h4>Status Overview</h4>
+                <canvas id="statusChart"></canvas>
+            </div>
+
+            <div class="card">
+                <h4>Total Tasks</h4>
+                <canvas id="totalChart"></canvas>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer>
+    Task Reminder App © 2025 — Created by Bishwanath Kumam
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script th:inline="javascript">
+    const pending = [[${pendingCount}]];
+    const overdue = [[${overdueCount}]];
+    const completed = [[${completedCount}]];
+    const total = [[${totalCount}]];
+
+    new Chart(statusChart, {
+        type: 'bar',
+        data: {
+            labels: ['Pending', 'Overdue', 'Completed'],
+            datasets: [{
+                data: [pending, overdue, completed],
+                backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0']
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    new Chart(totalChart, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [total],
+                backgroundColor: ['#9966ff']
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    // CLOCK
+    function updateClock() {
+        clock.innerText = "🕒 " + new Date().toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // DARK MODE
+    const themeIcon = document.getElementById("themeIcon");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("dark-mode", theme === "dark");
+        themeIcon.className = theme === "dark"
+            ? "fa-solid fa-sun theme-toggle"
+            : "fa-solid fa-moon theme-toggle";
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    themeIcon.onclick = () => {
+        const newTheme = document.body.classList.contains("dark-mode") ? "light" : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+    };
+</script>
+
+</body>
+</html>

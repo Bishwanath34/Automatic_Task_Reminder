@@ -1,0 +1,103 @@
+/* ===== APP BACKGROUND ===== */
+.app-bg {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+}
+
+/* ===== HEADER ===== */
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+}
+
+/* LEFT */
+.header-left {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* CENTER */
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+}
+
+.header-center a {
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.header-center a:hover {
+    transform: scale(1.15);
+    opacity: 0.85;
+}
+
+/* RIGHT */
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+/* BUTTONS */
+.btn-auth {
+    background: rgba(255,255,255,0.25);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-auth:hover {
+    background: white;
+    color: #182848;
+}
+
+/* ===== TASK CARD ===== */
+.task-card {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+}
+
+/* ===== BODY OFFSET FOR FIXED HEADER ===== */
+body {
+    padding-top: 70px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .header-center {
+        order: 2;
+    }
+
+    .header-left,
+    .header-right {
+        order: 1;
+    }
+}

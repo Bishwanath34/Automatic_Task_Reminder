@@ -1,0 +1,111 @@
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+        }
+
+        /* ===== HEADER ===== */
+        .page-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .page-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-auth {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-auth:hover {
+            background: rgba(255,255,255,0.35);
+        }
+
+        .btn-register {
+            background: #ffd369;
+            color: #212529;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-weight: 700;
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #555;
+            font-size: 18px;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .hero-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .hero-actions a {
+            padding: 12px 26px;
+            font-size: 16px;
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .feature-card i {
+            font-size: 34px;
+            color: #4b6cb7;
+            margin-bottom: 10px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            margin-top: 80px;
+            padding: 20px;
+            background: #212529;
+            color: white;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+        }
+

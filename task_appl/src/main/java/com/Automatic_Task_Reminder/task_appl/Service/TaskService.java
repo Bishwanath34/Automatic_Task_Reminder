@@ -1,45 +1,180 @@
 package com.Automatic_Task_Reminder.task_appl.Service;
 
 import com.Automatic_Task_Reminder.task_appl.Entity.taskModel;
+import com.Automatic_Task_Reminder.task_appl.Repository.TaskRepository;
+import com.Automatic_Task_Reminder.task_appl.enums.PriorityEnum;
+import com.Automatic_Task_Reminder.task_appl.enums.StatusEnum;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TaskService {
 
-    private List<taskModel> taskList = new ArrayList<>();
+    @Autowired
+    private TaskRepository taskRepository;
 
-    public TaskService() {
+    // Get tasks with pagination and filters
+    public List<taskModel> getTasksByUser(Integer userId, int pageNo, int pageSize, String sortBy, StatusEnum status, PriorityEnum priority, String filter) {
+        Sort sort = Sort.by(sortBy).ascending();
 
-        taskList.add(new taskModel(
-                "Pay Electricity Bill",
-                "Pay the monthly electricity bill before due date",
-                "Bills",
-                "High",
-                "Pending",
-                "false",
-                null,
-                LocalDate.of(2025, 1, 20),
-                LocalTime.of(18, 0),
-                LocalDate.of(2025, 1, 19),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                "user123"
-        ));
+        if (status != null || priority != null || (filter != null && !filter.isEmpty())) {
+            List<taskModel> filters = null;
+            if (status != null && priority != null && filter != null && !filter.isEmpty()) {
+                filters = taskRepository.findByUserIdAndStatusAndPriorityAndTitleContainingIgnoreCase(userId, status, priority, filter);
+            } else if (status == null && priority != null && filter != null && !filter.isEmpty()) {
+                filters = taskRepository.findByUserIdAndPriorityAndTitleContainingIgnoreCase(userId, priority, filter);
+            } else if (status != null && priority == null && filter != null && !filter.isEmpty()) {
+                filters = taskRepository.findByUserIdAndStatusAndTitleContainingIgnoreCase(userId, status, filter);
+            } else if (status != null && priority != null) {
+                filters = taskRepository.findByUserIdAndStatusAndPriority(userId, status, priority);
+            } else if (status != null) {
+                filters = taskRepository.findByUserIdAndStatus(userId, status);
+            } else if (priority != null) {
+                filters = taskRepository.findByUserIdAndPriority(userId, priority);
+            } else {
+                filters = taskRepository.findByUserIdAndTitleContainingIgnoreCase(userId, filter);
+            }
+
+            return filters.stream()
+                    .skip((long) pageNo * pageSize)
+                    .limit(pageSize)
+                    .toList();
+        }
+
+        return taskRepository.findByUserId(userId, PageRequest.of(pageNo, pageSize, sort));
     }
 
-    public List<taskModel> getTasks() {
-
-        return taskList;
+    public long getTotalCountByUser(Integer userId, StatusEnum status, PriorityEnum priority, String filter) {
+        if (status != null || priority != null || (filter != null && !filter.isEmpty())) {
+            if (status != null && priority != null && filter != null && !filter.isEmpty()) {
+                return taskRepository.countByUserIdAndStatusAndPriorityAndTitleContainingIgnoreCase(userId, status, priority, filter);
+            } else if (status != null && priority != null) {
+                return taskRepository.countByUserIdAndStatusAndPriority(userId, status, priority);
+            } else if (status != null) {
+                return taskRepository.countByUserIdAndStatus(userId, status);
+            } else if (priority != null) {
+                return taskRepository.countByUserIdAndPriority(userId, priority);
+            } else {
+                return taskRepository.countByUserIdAndTitleContainingIgnoreCase(userId, filter);
+            }
+        }
+        return taskRepository.countByUserId(userId);
     }
 
-    public void addTask(taskModel taskModel1) {
-        taskList.add(taskModel1);
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel addTask(taskModel taskModel) {
+        return taskRepository.save(taskModel);
     }
+
+    @Caching(evict = {
+            @CacheEvict(value = "task", key = "#id"),
+            @CacheEvict(value = "tasks", allEntries = true)
+    })
+    public void deleteTaskByUser(long id, Integer userId) {
+        taskModel task = taskRepository.findByIdAndUserId(id, userId);
+        if (task != null) taskRepository.delete(task);
+    }
+
+    @Cacheable(value = "task", key = "#id")
+    public taskModel findTaskByUser(long id, Integer userId) {
+        return taskRepository.findByIdAndUserId(id, userId);
+    }
+
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel updateTaskByUser(long id, taskModel updatedTask, Integer userId) {
+        taskModel existing = taskRepository.findByIdAndUserId(id, userId);
+        if (existing == null) return null;
+
+        existing.setTitle(updatedTask.getTitle());
+        existing.setDescription(updatedTask.getDescription());
+        existing.setStatus(updatedTask.getStatus());
+        existing.setPriority(updatedTask.getPriority());
+        existing.setDueDate(updatedTask.getDueDate());
+        return taskRepository.save(existing);
+    }
+
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel updateMarkAsDoneByUser(long id, Integer userId) {
+        taskModel task = taskRepository.findByIdAndUserId(id, userId);
+        if (task == null) return null;
+
+        task.setStatus(StatusEnum.DONE);
+        return taskRepository.save(task);
+    }
+
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public taskModel updateCompletedAtByUser(long id, Integer userId) {
+        taskModel task = taskRepository.findByIdAndUserId(id, userId);
+        if (task == null) return null;
+
+        task.setCompletedAt(LocalDateTime.now());
+        return taskRepository.save(task);
+    }
+
+    public List<taskModel> getAllTasksByUser(Integer userId) {
+        return taskRepository.findByUserId(userId);
+    }
+
+    public long countAllTasks(Integer userId) {
+        return taskRepository.countByUserId(userId);
+    }
+
+    public long  countCompleted(Integer userId) {
+        return taskRepository.countByUserIdAndStatus(userId,StatusEnum.DONE);
+    }
+
+
+    public long  countPending(Integer userId) {
+        return taskRepository.countByUserIdAndStatus(userId,StatusEnum.PENDING);
+    }
+
+    public long countOverdue(Integer userId) {
+        return taskRepository.countOverdueTasks(userId, LocalDate.now());
+    }
+
+    public void downloadcsv(HttpServletResponse response, Integer id) throws Exception {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition","attachment; filename=users.csv");
+List<taskModel> tasks=taskRepository.findByUserId(id);
+CSVPrinter printer=new CSVPrinter(
+        response.getWriter(),
+        CSVFormat.DEFAULT.withHeader(
+                "ID", "Title", "User", "Description", "DueDate", "Status", "Priority", "CreatedAt", "CompletedAt", "ReminderSent"
+        )
+);
+for(taskModel task:tasks){
+    printer.printRecord(
+            task.getId(),
+            task.getTitle(),
+            task.getUser(),
+            task.getDescription(),
+            task.getDueDate(),
+            task.getStatus(),
+            task.getPriority(),
+            task.getCreatedAt(),
+            task.getCompletedAt(),
+            task.isReminderSent()
+    );
+}
+printer.flush();
+    }
+
+
 }
