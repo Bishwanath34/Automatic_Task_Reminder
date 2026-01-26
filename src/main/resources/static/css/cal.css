@@ -15,6 +15,7 @@ body {
     padding-bottom: 50px;
     overflow: hidden;
     transition: background 0.3s ease, color 0.3s ease;
+    color: #212529;
 }
 
 /* ================= HEADER ================= */
@@ -123,6 +124,7 @@ body {
     box-shadow: 0 6px 14px rgba(0,0,0,0.12);
     width: 100%;
     max-width: 420px;
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .calendar-header {
@@ -146,6 +148,11 @@ body {
     padding: 4px 10px;
     border-radius: 6px;
     cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.calendar-header button:hover {
+    background: #3a5bbf;
 }
 
 .calendar-days,
@@ -166,6 +173,7 @@ body {
     padding: 2px;
     border-radius: 6px;
     font-size: 12px;
+    transition: background 0.25s ease, color 0.25s ease;
 }
 
 .date-number {
@@ -181,6 +189,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: background 0.25s ease, color 0.25s ease;
 }
 
 /* PRIORITIES */
@@ -200,11 +209,12 @@ footer {
     text-align: center;
     line-height: 50px;
     font-size: 13px;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ================= DARK MODE ================= */
 body.dark-mode {
-    background: #121212;
+    background: linear-gradient(135deg, #0f2027, #232526);
     color: #e0e0e0;
 }
 
@@ -219,10 +229,22 @@ body.dark-mode .calendar {
 
 body.dark-mode .calendar-header button {
     background: #3a3a3a;
+    color: #e0e0e0;
 }
 
-body.dark-mode footer {
-    background: #111;
+body.dark-mode .calendar-days div,
+body.dark-mode .date-number {
+    color: #ccc;
+}
+
+body.dark-mode .date {
+    background: #2c2c2c;
+    color: #e0e0e0;
+}
+
+body.dark-mode .task {
+    background: #3a3a3a;
+    color: #e0e0e0;
 }
 
 body.dark-mode .priority-LOW {
@@ -238,4 +260,13 @@ body.dark-mode .priority-MEDIUM {
 body.dark-mode .priority-HIGH {
     background: #721c24;
     color: #f8d7da;
+}
+
+body.dark-mode .profile-pic {
+    border: 2px solid #ccc;
+}
+
+body.dark-mode footer {
+    background: #111;
+    color: #ccc;
 }

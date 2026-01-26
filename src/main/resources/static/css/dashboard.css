@@ -12,6 +12,7 @@ body {
     padding-bottom: 50px;
     overflow: hidden;
     transition: background 0.3s ease, color 0.3s ease;
+    color: #212529;
 }
 
 /* ================= HEADER ================= */
@@ -120,6 +121,7 @@ footer {
     text-align: center;
     line-height: 50px;
     font-size: 13px;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ================= LAYOUT ================= */
@@ -137,6 +139,7 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    transition: background 0.3s ease;
 }
 
 .profile-box {
@@ -195,7 +198,10 @@ footer {
     padding: 16px;
     border-radius: 12px;
     box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-    transition: background 0.3s ease, color 0.3s ease;
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .value {
@@ -210,11 +216,9 @@ footer {
     gap: 14px;
 }
 
-/* ================================================= */
-/* ================= DARK MODE ===================== */
-/* ================================================= */
+/* ================= DARK MODE ================= */
 body.dark-mode {
-    background: #121212;
+    background: linear-gradient(135deg, #0f2027, #232526);
     color: #e0e0e0;
 }
 
@@ -232,6 +236,29 @@ body.dark-mode .card {
     box-shadow: 0 6px 18px rgba(0,0,0,0.6);
 }
 
+body.dark-mode .sidebar a {
+    color: #ccc;
+}
+
+body.dark-mode .sidebar a:hover {
+    background: rgba(255,255,255,0.15);
+}
+
 body.dark-mode footer {
     background: #111;
+    color: #ccc;
+}
+
+body.dark-mode .profile-pic {
+    border: 2px solid #ccc;
+}
+
+body.dark-mode .logout-btn {
+    background: rgba(255,255,255,0.15);
+    color: #e0e0e0;
+}
+
+body.dark-mode .logout-btn:hover {
+    background: #4b6cb7;
+    color: white;
 }

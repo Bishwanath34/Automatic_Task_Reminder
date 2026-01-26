@@ -88,7 +88,7 @@
 
         <div>
             <label>Keyword</label>
-            <input type="text" name="keyword" class="form-control" placeholder="Search...">
+            <input type="text" name="keyword" class="form-control" placeholder="Search..." th:value="${param.keyword}">
         </div>
 
         <div class="action-group">
@@ -135,6 +135,60 @@
         </tbody>
     </table>
 </div>
+
+<!-- PAGINATION UI -->
+<nav class="mx-2 mb-4">
+    <ul class="pagination justify-content-center">
+
+        <!-- Previous -->
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/api/tasks(
+                    pageNo=${currentPage-1},
+                    pageSize=${pageSize},
+                    sortBy=${param.sortBy},
+                    status=${param.status},
+                    priority=${param.priority},
+                    keyword=${param.keyword}
+               )}">
+                Previous
+            </a>
+        </li>
+
+        <!-- Page Numbers -->
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link"
+               th:href="@{/api/tasks(
+                    pageNo=${i},
+                    pageSize=${pageSize},
+                    sortBy=${param.sortBy},
+                    status=${param.status},
+                    priority=${param.priority},
+                    keyword=${param.keyword}
+               )}"
+               th:text="${i + 1}">
+            </a>
+        </li>
+
+        <!-- Next -->
+        <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/api/tasks(
+                    pageNo=${currentPage+1},
+                    pageSize=${pageSize},
+                    sortBy=${param.sortBy},
+                    status=${param.status},
+                    priority=${param.priority},
+                    keyword=${param.keyword}
+               )}">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
 
 <!-- FOOTER -->
 <footer>
@@ -215,7 +269,84 @@
         localStorage.setItem("theme", newTheme);
         applyTheme(newTheme);
     };
+
+    function confirmDelete(url) {
+        if (confirm("⚠️ Are you sure you want to delete this task?")) {
+            window.location.href = url;
+        }
+    }
 </script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", system-ui, sans-serif;
+    }
+
+    body {
+        background: #f4f6f9;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding-top: 60px;
+        padding-bottom: 50px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /* HEADER */
+    .page-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+    }
+    .header-title-left { font-size: 20px; font-weight: 600; min-width: 220px; }
+    .header-icons-center { flex: 1; display: flex; justify-content: center; gap: 22px; }
+    .header-icons-center a { color: white; font-size: 18px; }
+    .header-icons-right { display: flex; align-items: center; gap: 12px; }
+    .header-clock { font-size: 13px; }
+    .logout-btn { background: rgba(255,255,255,0.25); color: white; padding: 6px 14px; border-radius: 18px; font-size: 13px; text-decoration: none; }
+    .logout-btn:hover { background: white; color: #182848; }
+
+    /* FILTER CARD */
+    .filter-card { background: #fff; padding: 14px; border-radius: 10px; box-shadow: 0 6px 12px rgba(0,0,0,0.08); margin: 10px; }
+    .filter-card label { font-size: 13px; }
+
+    /* TABLE */
+    .table-container { flex: 1; overflow: auto; }
+    .table th { background: #212529; color: white; }
+
+    /* PROFILE PIC */
+    .profile-pic { width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; }
+
+    /* FOOTER */
+    footer { position: fixed; bottom: 0; width: 100%; height: 50px; background: #212529; color: white; text-align: center; line-height: 50px; font-size: 13px; }
+
+    /* DARK MODE */
+    body.dark-mode { background: #0f2027; color: #e0e0e0; }
+    body.dark-mode .page-header { background: linear-gradient(135deg, #232526, #414345); }
+    body.dark-mode .filter-card { background: #1e1e1e; color: #ddd; box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
+    body.dark-mode .table th { background: #2c2c2c; color: #e0e0e0; }
+    body.dark-mode .table td { color: #ccc; }
+    body.dark-mode .profile-pic { border: 2px solid #ccc; }
+    body.dark-mode .btn-primary { background: #414345; border-color: #414345; }
+    body.dark-mode .btn-primary:hover { background: #5a5a5a; border-color: #5a5a5a; }
+    body.dark-mode .btn-outline-secondary { color: #e0e0e0; border-color: #555; }
+    body.dark-mode .btn-outline-secondary:hover { background: #2a2a2a; color: #fff; }
+    body.dark-mode .logout-btn { background: rgba(255,255,255,0.1); color: #e0e0e0; }
+    body.dark-mode footer { background: #111; color: #ccc; }
+</style>
 
 </body>
 </html>

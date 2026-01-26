@@ -96,7 +96,13 @@ public class taskController {
         taskModel.setCreatedAt(LocalDateTime.now());
         taskService.addTask(taskModel);
 
-        return "redirect:/api/tasks?pageNo=0&pageSize=5";
+        return "redirect:/api/task/success";
+    }
+    @GetMapping("/task/success")
+    public String success(HttpSession session) {
+        User loggedUser = (User) session.getAttribute("loggedUser");
+        if (loggedUser == null) return "redirect:/loginForm";
+        return "success";
     }
 
     @GetMapping("/task/{id}")

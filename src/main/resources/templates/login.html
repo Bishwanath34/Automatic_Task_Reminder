@@ -10,7 +10,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/login.css}">
-
 </head>
 <body>
 
@@ -20,7 +19,10 @@
         <a th:href="@{/}" title="Back"><i class="fa-solid fa-arrow-left"></i></a>
         <span class="header-title">⏰ Task Reminder App</span>
     </div>
-    <span id="clock" class="header-clock"></span>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <span id="clock" class="header-clock"></span>
+        <i id="themeIcon" class="fa-solid fa-moon" style="cursor:pointer;"></i>
+    </div>
 </div>
 
 
@@ -75,6 +77,26 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+    const themeIcon = document.getElementById("themeIcon");
+
+    function applyTheme(theme) {
+        document.body.classList.toggle("dark-mode", theme === "dark");
+        themeIcon.className =
+            theme === "dark"
+                ? "fa-solid fa-sun"
+                : "fa-solid fa-moon";
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    themeIcon.onclick = () => {
+        const newTheme = document.body.classList.contains("dark-mode")
+            ? "light"
+            : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+    };
 </script>
 
 </body>
