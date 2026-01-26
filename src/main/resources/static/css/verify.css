@@ -1,37 +1,46 @@
 
+        /* ================= GLOBAL ================= */
         body {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            font-family: "Segoe UI", system-ui, sans-serif;
+            margin: 0;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* ===== HEADER ===== */
+        /* ================= HEADER ================= */
         .page-header {
-            width: 100%;
+            height: 60px; /* same as profile page */
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 12px 24px;
+            padding: 0 20px;
             background: linear-gradient(135deg, #4b6cb7, #182848);
             color: white;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
         }
 
-        .header-left a {
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .back-btn {
             color: white;
             font-size: 18px;
             text-decoration: none;
         }
 
-        .header-left a:hover {
-            opacity: 0.85;
-        }
-
-        .header-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-left: 8px;
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .header-clock {
@@ -39,7 +48,29 @@
             opacity: 0.9;
         }
 
-        /* ===== OTP CARD ===== */
+        /* ================= DARK MODE TOGGLE ================= */
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 50%;
+            color: white;
+            transition: background 0.25s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* ================= OTP CARD ================= */
+        .card {
+            border-radius: 24px;
+            max-width: 420px;
+            width: 100%;
+            padding: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
         .otp-input {
             width: 48px;
             height: 64px;
@@ -47,24 +78,53 @@
             text-align: center;
             border-radius: 12px;
             border: 2px solid #0d6efd;
-            transition: transform 0.3s;
+            transition: transform 0.3s, background 0.3s, color 0.3s, border-color 0.3s;
         }
 
         .otp-input:hover {
             transform: scale(1.1);
         }
 
-        .card {
-            border-radius: 24px;
-        }
-
-        /* ===== FOOTER ===== */
+        /* ================= FOOTER ================= */
         .app-footer {
-            margin-top: auto;
-            padding: 16px;
+            height: 50px; /* same as profile page */
+            padding: 0;
             background: #212529;
             color: #ffffff;
             text-align: center;
+            line-height: 50px;
             font-size: 14px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ================= DARK MODE ================= */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .page-header {
+            background: linear-gradient(135deg, #232526, #414345);
+        }
+
+        body.dark-mode .card {
+            background: #1e1e1e;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.6);
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .otp-input {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border: 2px solid #0d6efd;
+        }
+
+        body.dark-mode .otp-input::placeholder {
+            color: #aaa;
+        }
+
+        body.dark-mode .app-footer {
+            background: #111;
+            color: #ccc;
         }
 
